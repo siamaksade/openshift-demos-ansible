@@ -1,0 +1,21 @@
+---
+## Sonatype Nexus Install
+- name: check if Nexus Exists
+  shell: "oc get service nexus -n {{desired_project}}"
+  register: install_nexus
+  ignore_errors: true
+
+- name: deploy Nexus Template
+  shell: "oc new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{nexus_version}}-persistent-template.yaml --param=VOLUME_CAPACITY={{nexus_volume_capacity}} --param=MAX_MEMORY={{nexus_max_memory}} --param=NEXUS_VERSION={{nexus_image_version}} -n {{desired_project}}"
+  when: (install_nexus | failed) and (not ephemeral)
+
+- name: deploy Nexus Template
+  shell: "oc new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{nexus_version}}-template.yaml --param=MAX_MEMORY={{nexus_max_memory}} --param=NEXUS_VERSION={{nexus_image_version}} -n {{desired_project}}"
+  when: (install_nexus | failed) and ephemeral
+
+- name: wait for Nexus to be running
+  shell: "oc get dc/nexus -o yaml -n {{desired_project}}"
+  register: result
+  until: '"availableReplicas: 1" in result.stdout'
+  retries: 5
+  delay: 60

@@ -1,0 +1,9 @@
+---
+- name: Undeploy Demo
+  hosts: localhost
+  gather_facts: false
+  run_once: true
+  tasks: 
+  - name: Delete projects
+    shell: "oc delete project {{project_cicd}}"
+    ignore_errors: true

@@ -1,0 +1,10 @@
+---
+## Gogs Git Server Install
+- name: check CI/CD project exists
+  shell: "oc get project {{project_cicd}}"
+  register: cicd_project_result
+  ignore_errors: true
+
+- name: create CI/CD project
+  shell: "oc new-project {{project_cicd}} --display-name='CI/CD' --description='CI/CD Components (Jenkins, Gogs, etc)'"
+  when: cicd_project_result|failed

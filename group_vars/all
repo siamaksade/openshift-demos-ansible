@@ -1,0 +1,13 @@
+---
+project_suffix: demo
+
+project_cicd: "cicd-{{project_suffix}}"
+project_coolstore_stage: coolstore-stage-{{project_suffix}}"
+project_coolstore_test: coolstore-test-{{project_suffix}}"
+project_inventory_test: inventory-test-{{project_suffix}}"
+project_dev: developer-{{project_suffix}}"
+
+github_account: jbossdemocentral
+github_ref: stable-ocp-3.6
+
+ephemeral: false

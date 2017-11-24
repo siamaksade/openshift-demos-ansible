@@ -1,0 +1,9 @@
+---
+- name: Deploy Demo
+  hosts: localhost
+  gather_facts: false
+  run_once: true
+  roles:
+    - create_projects
+    - { role: nexus, desired_project: "{{project_cicd}}" }
+    - { role: gogs, desired_project: "{{project_cicd}}" }

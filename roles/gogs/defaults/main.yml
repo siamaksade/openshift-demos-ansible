@@ -1,0 +1,6 @@
+---
+gogs_image_version: 0.11.29
+gogs_admin_user: team
+gogs_admin_password: team
+gogs_user: developer
+gogs_password: developer

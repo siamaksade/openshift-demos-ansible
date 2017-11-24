@@ -1,0 +1,28 @@
+---
+## Gogs Git Server Install
+- name: check if Gogs exists
+  shell: "oc get service gogs -n {{desired_project}}"
+  register: install_gogs
+  ignore_errors: true
+
+- name: create Gogs dummy route 
+  shell: "oc create route edge gogs --service=gogs --port=3000 -n {{desired_project}}"
+  when: install_gogs | failed
+
+- name: get Gogs route
+  shell: "oc get route gogs --template={%raw%}{{.spec.host}}{%endraw%} -n {{desired_project}}"
+  register: gogs_route_result
+
+- name: set Gogs route fact
+  set_fact:
+    gogs_route: "{{gogs_route_result.stdout}}"
+
+- name: delete Gogs dummy route
+  shell: "oc delete route gogs -n {{desired_project}}"
+  ignore_errors: true
+  when: install_gogs | failed 
+
+- import_tasks: deploy.yml
+  when: install_gogs | failed
+
+- import_tasks: configure.yml
