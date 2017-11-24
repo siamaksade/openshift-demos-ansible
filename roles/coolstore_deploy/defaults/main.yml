@@ -1,0 +1,7 @@
+---
+builds_template: https://raw.githubusercontent.com/{{ github_account }}/coolstore-microservice/{{ github_ref }}/openshift/templates/coolstore-builds-template.yaml
+coolstore_github_repo: https://github.com/{{github_account}}/coolstore-microservice.git
+deployments_template: https://raw.githubusercontent.com/{{ github_account }}/coolstore-microservice/{{ github_ref }}/openshift/templates/coolstore-deployments-template.yaml
+netflix_oss_template: https://raw.githubusercontent.com/{{ github_account }}/coolstore-microservice/{{ github_ref }}/openshift/templates/netflix-oss-list.yaml
+
+image_version: prod

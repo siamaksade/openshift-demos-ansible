@@ -1,10 +1,62 @@
 ---
-## Gogs Git Server Install
+## create projects
 - name: check CI/CD project exists
-  shell: "oc get project {{project_cicd}}"
+  shell: "oc get project {{ project_cicd }}"
   register: cicd_project_result
   ignore_errors: true
+  tags:
+    - cicd
 
 - name: create CI/CD project
-  shell: "oc new-project {{project_cicd}} --display-name='CI/CD' --description='CI/CD Components (Jenkins, Gogs, etc)'"
+  shell: "oc new-project {{ project_cicd }} --display-name='{{ project_cicd_name }}' --description='{{ project_cicd_desc }}'"
   when: cicd_project_result|failed
+  tags:
+    - cicd
+
+- name: check Coolstore PROD project exists
+  shell: "oc get project {{ project_coolstore_prod }}"
+  register: coolstore_prod_project_result
+  ignore_errors: true
+
+- name: create Coolstore PROD project
+  shell: "oc new-project {{ project_coolstore_prod }} --display-name='{{ project_coolstore_prod_name }}' --description='{{ project_coolstore_prod_desc }}'"
+  when: coolstore_prod_project_result|failed
+
+- name: check Coolstore TEST project exists
+  shell: "oc get project {{ project_coolstore_test }}"
+  register: coolstore_test_project_result
+  ignore_errors: true
+  tags:
+    - cicd
+
+- name: create Coolstore TEST project
+  shell: "oc new-project {{ project_coolstore_test }} --display-name='{{ project_coolstore_test_name }}' --description='{{ project_coolstore_test_desc }}'"
+  when: coolstore_test_project_result|failed
+  tags:
+    - cicd
+
+- name: check Inventory TEST project exists
+  shell: "oc get project {{ project_inventory_test }}"
+  register: inventory_test_project_result
+  ignore_errors: true
+  tags:
+    - cicd
+
+- name: create Coolstore TEST project
+  shell: "oc new-project {{ project_inventory_test }} --display-name='{{ project_inventory_test_name }}' --description='{{ project_inventory_test_desc }}'"
+  when: inventory_test_project_result|failed
+  tags:
+    - cicd
+
+- name: check Developer project exists
+  shell: "oc get project {{ project_dev }}"
+  register: dev_project_result
+  ignore_errors: true
+  tags:
+    - cicd
+
+- name: create Developer project
+  shell: "oc new-project {{ project_dev }} --display-name='{{ project_dev_name }}' --description='{{ project_dev_desc }}'"
+  when: dev_project_result|failed
+  tags:
+    - cicd

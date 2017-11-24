@@ -5,5 +5,7 @@
   run_once: true
   roles:
     - coolstore_projects
-    - { role: nexus, desired_project: "{{project_cicd}}", when: maven_mirror_url == '' }
-    - { role: gogs, desired_project: "{{project_cicd}}" }
+    - { role: apps_hostname, project_name: "{{ project_cicd }}" }
+    - { role: nexus, project_name: "{{ project_cicd }}", when: maven_mirror_url == '' }
+    - { role: gogs, project_name: "{{ project_cicd }}", gogs_hostname: "{{ apps_hostname }}" }
+    - { role: coolstore_deploy, project_name: "{{ project_cicd }}", apps_hostname: "{{ apps_hostname }}" }

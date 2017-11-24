@@ -1,20 +1,20 @@
 ---
 ## Sonatype Nexus Install
 - name: check if Nexus exists
-  shell: "oc get service nexus -n {{desired_project}}"
+  shell: "oc get service nexus -n {{ project_name }}"
   register: install_nexus
   ignore_errors: true
 
 - name: deploy Nexus template
-  shell: "oc new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{nexus_version}}-persistent-template.yaml --param=VOLUME_CAPACITY={{nexus_volume_capacity}} --param=MAX_MEMORY={{nexus_max_memory}} --param=NEXUS_VERSION={{nexus_image_version}} -n {{desired_project}}"
+  shell: "oc new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{ nexus_version }}-persistent-template.yaml --param=VOLUME_CAPACITY={{ nexus_volume_capacity }} --param=MAX_MEMORY={{ nexus_max_memory }} --param=NEXUS_VERSION={{ nexus_image_version }} -n {{ project_name }}"
   when: (install_nexus | failed) and (not ephemeral)
 
 - name: deploy Nexus template
-  shell: "oc new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{nexus_version}}-template.yaml --param=MAX_MEMORY={{nexus_max_memory}} --param=NEXUS_VERSION={{nexus_image_version}} -n {{desired_project}}"
+  shell: "oc new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{ nexus_version }}-template.yaml --param=MAX_MEMORY={{ nexus_max_memory }} --param=NEXUS_VERSION={{ nexus_image_version }} -n {{ project_name }}"
   when: (install_nexus | failed) and ephemeral
 
 - name: wait for Nexus to be running
-  shell: "oc get dc/nexus -o yaml -n {{desired_project}}"
+  shell: "oc get dc/nexus -o yaml -n {{ project_name }}"
   register: result
   until: '"availableReplicas: 1" in result.stdout'
   retries: 5

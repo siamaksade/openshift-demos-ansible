@@ -1,0 +1,31 @@
+---
+## build container images
+
+- name: check if build configs exists
+  shell: "oc get buildconfig web-ui -n {{ project_coolstore_prod }}"
+  register: builds_result
+  ignore_errors: true
+
+- name: create build configs
+  shell: "oc process -f {{ builds_template }} --param=GIT_URI={{ coolstore_github_repo }} --param=GIT_REF={{ github_ref }} --param=MAVEN_MIRROR_URL={{ maven_mirror_url }} -n {{ project_coolstore_prod }} | oc create -f - -n {{ project_coolstore_prod }}"
+  when: builds_result|failed
+
+- name: list build configs
+  shell: "oc get bc -o=custom-columns=:.metadata.name -n {{ project_coolstore_prod }}  | sed '/^$/d'"
+  register: builds_list
+
+- name: start image builds
+  shell: "oc start-build {{ item }} -n {{ project_coolstore_prod }} --wait"
+  with_items: "{{  builds_list.stdout_lines }}"
+  register: build_result
+  until: build_result|success
+  retries: 5
+  delay: 30
+  tags:
+    - build
+
+- name: check builds completed successfully
+  shell: oc get builds -l buildconfig={{ item }} -o custom-columns=:.status.phase -n {{ project_coolstore_prod }} | sed '/^$/d'
+  with_items: "{{  builds_list.stdout_lines }}"
+  register: build_result
+  failed_when: build_result.stdout.find('Complete') == -1

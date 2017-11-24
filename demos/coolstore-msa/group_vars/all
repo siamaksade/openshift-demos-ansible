@@ -1,11 +1,25 @@
 ---
 project_suffix: demo
 
-project_cicd: "cicd-{{project_suffix}}"
-project_coolstore_stage: coolstore-stage-{{project_suffix}}"
-project_coolstore_test: coolstore-test-{{project_suffix}}"
-project_inventory_test: inventory-test-{{project_suffix}}"
-project_dev: developer-{{project_suffix}}"
+project_cicd: cicd-{{ project_suffix }}
+project_cicd_name: "CI/CD"
+project_cicd_desc: "CI/CD Components (Jenkins, Gogs, etc)"
+
+project_coolstore_prod: coolstore-prod-{{ project_suffix }}
+project_coolstore_prod_name: "CoolStore PROD"
+project_coolstore_prod_desc: "CoolStore PROD Environment"
+
+project_coolstore_test: coolstore-test-{{ project_suffix }}
+project_coolstore_test_name: "CoolStore TEST"
+project_coolstore_test_desc: "CoolStore Test Environment"
+
+project_inventory_test: inventory-test-{{ project_suffix }}
+project_inventory_test_name: "Inventory DEV"
+project_inventory_test_desc: "Inventory DEV Environment"
+
+project_dev: developer-{{ project_suffix }}
+project_dev_name: "Developer Project"
+project_dev_desc: "Personal Developer Project"
 
 github_account: jbossdemocentral
 github_ref: stable-ocp-3.6

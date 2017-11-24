@@ -1,0 +1,12 @@
+---
+# get openshift apps hostname
+- name: create dummy route to calculate hostnames
+  shell: "oc create route edge dummy --service=dummy --port=8080 -n {{ project_name }}"
+
+- name: get dummy route to calculate hostnames
+  shell: "oc get route dummy -o=go-template --template={%raw%}'{{ .spec.host }}'{%endraw%} -n {{ project_name }}"
+  register: dummy_route_result
+
+- name: set fact for routes hostname
+  set_fact: 
+    apps_hostname: "{{ dummy_route_result.stdout|regex_replace('^dummy-' + project_name + '\\.(.*)$', '\\1') }}"
