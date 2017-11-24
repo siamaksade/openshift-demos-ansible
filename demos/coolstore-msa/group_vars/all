@@ -11,3 +11,5 @@ github_account: jbossdemocentral
 github_ref: stable-ocp-3.6
 
 ephemeral: false
+
+maven_mirror_url: 

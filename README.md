@@ -17,11 +17,8 @@ $ docker run --rm -it  \
 
 ### Variables
 
-| Variable         | Default | Description                                                          |
-|------------------|---------|----------------------------------------------------------------------|
-| `project_suffix` | demo    | A suffix to be added to all project names e.g. cicd-demo             |
-| `ephemeral`      | false   | If set to true, all pods will be deployed without persistent storage |
-
-```
-ephemeral           
-```
+| Variable           | Default | Description                                                                           |
+|--------------------|---------|---------------------------------------------------------------------------------------|
+| `project_suffix`   | demo    | A suffix to be added to all project names e.g. cicd-demo                              |
+| `ephemeral`        | false   | If set to true, all pods will be deployed without persistent storage                  |
+| `maven_mirror_url` | false   | Maven repository for Java S2I builds. If empty, Sonatype Nexus gets deployed and used |
