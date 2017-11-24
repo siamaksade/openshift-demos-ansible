@@ -8,9 +8,12 @@ on any OpenShift environment:
 ```
 $ git clone https://github.com/siamaksade/openshift-demos-ansible.git
 $ cd openshift-demos-ansible
-$ docker run --rm -it  -v ~/.kube:/opt/app-root/src/.kube -v $(pwd):/playbooks openshift/origin-ansible:v3.7 ansible-playbook /playbooks/deploy.yml --extra-vars "ephemeral=true"
+$ docker run --rm -it  \
+    -v ~/.kube:/opt/app-root/src/.kube \
+    -v $(pwd):/playbooks 
+    -w /playbooks openshift/origin-ansible:v3.7 \
+    ansible-playbook demos/coolstore-msa/deploy.yml --extra-vars "ephemeral=true"
 ```
-
 
 ### Variables
 

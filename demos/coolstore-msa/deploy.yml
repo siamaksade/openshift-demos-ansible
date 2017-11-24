@@ -1,9 +1,9 @@
 ---
-- name: Deploy Demo
+- name: Deploy Coolstore Microservices Demo
   hosts: localhost
   gather_facts: false
   run_once: true
   roles:
-    - create_projects
+    - coolstore_projects
     - { role: nexus, desired_project: "{{project_cicd}}" }
     - { role: gogs, desired_project: "{{project_cicd}}" }

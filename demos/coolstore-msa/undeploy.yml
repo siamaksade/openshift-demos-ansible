@@ -1,5 +1,5 @@
 ---
-- name: Undeploy Demo
+- name: Undeploy Coolstore Microservices Demo
   hosts: localhost
   gather_facts: false
   run_once: true
