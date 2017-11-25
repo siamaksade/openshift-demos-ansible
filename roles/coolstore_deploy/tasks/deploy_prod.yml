@@ -1,10 +1,10 @@
 ---
 ## deploy prod environment
 - name: create deployment configs in prod
-  shell: "oc process -f {{ deployments_template }} --param=APP_VERSION={{ image_version }} --param=HOSTNAME_SUFFIX={{ project_coolstore_prod }}.{{ apps_hostname }} -n {{ project_coolstore_prod }} | oc create -f - -n {{ project_coolstore_prod }}"
+  shell: "oc process -f {{ deployments_template }} --param=APP_VERSION={{ image_version }} --param=HOSTNAME_SUFFIX={{ project_prod }}.{{ apps_hostname }} -n {{ project_prod }} | oc create -f - -n {{ project_prod }}"
   ignore_errors: true
 
 - name: deploy netflix oss in prod
-  shell: "oc create -f {{ netflix_oss_template }} -n {{ project_coolstore_prod }}"
+  shell: "oc create -f {{ netflix_oss_template }} -n {{ project_prod }}"
   ignore_errors: true
 

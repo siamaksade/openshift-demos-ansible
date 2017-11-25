@@ -8,5 +8,5 @@
   register: dummy_route_result
 
 - name: set fact for routes hostname
-  set_fact: 
+  set_fact:
     apps_hostname: "{{ dummy_route_result.stdout|regex_replace('^dummy-' + project_name + '\\.(.*)$', '\\1') }}"

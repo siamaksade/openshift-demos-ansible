@@ -1,0 +1,29 @@
+---
+project_suffix: demo
+
+project_cicd: cicd-{{ project_suffix }}
+project_cicd_name: "CI/CD"
+project_cicd_desc: "CI/CD Components (Jenkins, Gogs, etc)"
+
+project_prod: coolstore-prod-{{ project_suffix }}
+project_prod_name: "CoolStore PROD"
+project_prod_desc: "CoolStore PROD Environment"
+
+project_stage: coolstore-test-{{ project_suffix }}
+project_stage_name: "CoolStore TEST"
+project_stage_desc: "CoolStore Test Environment"
+
+project_test: inventory-test-{{ project_suffix }}
+project_test_name: "Inventory DEV"
+project_test_desc: "Inventory DEV Environment"
+
+project_dev: developer-{{ project_suffix }}
+project_dev_name: "Developer Project"
+project_dev_desc: "Personal Developer Project"
+
+github_account: jbossdemocentral
+github_ref: stable-ocp-3.6
+
+ephemeral: false
+
+maven_mirror_url: 

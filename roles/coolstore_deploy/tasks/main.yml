@@ -4,7 +4,7 @@
 - import_tasks: build_images.yml
 
 - name: check if prod is deployed
-  shell: "oc get dc web-ui -n {{ project_coolstore_prod }}"
+  shell: "oc get dc web-ui -n {{ project_prod }}"
   register: prod_deployed_result
   ignore_errors: true
 
