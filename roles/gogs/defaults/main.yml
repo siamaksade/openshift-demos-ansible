@@ -8,3 +8,6 @@ gogs_user: developer
 gogs_password: developer
 
 gogs_hostname: 127.0.0.1.nip.io
+
+gogs_generate_user_count: 0
+gogs_generate_user_format: user%02d

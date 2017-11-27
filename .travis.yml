@@ -1,0 +1,19 @@
+env:
+  global:
+  - REPO=siamaksade/openshift-demos-ansible
+
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
+
+script:
+  - docker build -f Dockerfile -t $REPO:dev .
+
+after_success:
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - docker tag $REPO:dev $REPO:$TAG
+  - docker push $REPO:$TAG

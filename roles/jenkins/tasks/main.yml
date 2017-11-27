@@ -1,0 +1,18 @@
+---
+## Deploy Jenkins
+- name: check if jenkins exists
+  shell: "{{ openshift_cli }} get service jenkins -n {{ project_name }}"
+  register: install_jenkins
+  ignore_errors: true
+
+- name: deploy jenkins persistent from template
+  shell: "{{ openshift_cli }} new-app jenkins-persistent -l app=jenkins -p MEMORY_LIMIT=1Gi -n {{ project_name }}"
+  when: not ephemeral and install_jenkins|failed
+
+- name: deploy jenkins ephemeral from template
+  shell: "{{ openshift_cli }} new-app jenkins-ephemeral -l app=jenkins -p MEMORY_LIMIT=1Gi -n {{ project_name }}"
+  when: ephemeral and install_jenkins|failed
+
+- name: set jenkins cpu and mem resources
+  shell: "{{ openshift_cli }} set resources dc/jenkins --limits=cpu=1,memory=2Gi --requests=cpu=200m,memory=512Mi -n {{ project_name }}"
+  when: install_jenkins|failed

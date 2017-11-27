@@ -1,0 +1,13 @@
+---
+- name: Test
+  hosts: localhost
+  gather_facts: false
+  run_once: true
+  tasks:
+    - include_role:
+        name: common
+
+    - import_role:
+        name: coolstore_build_images
+      vars:
+        project_name: "{{ project_prod }}"

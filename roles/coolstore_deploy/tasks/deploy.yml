@@ -1,0 +1,16 @@
+---
+# Deploy CoolStore Microservices
+- name: deploy coolstore in {{ project_name }}
+  shell: "{{ openshift_cli }} process -f {{ deployments_template }} --param=APP_VERSION={{ image_version }} --param=HOSTNAME_SUFFIX={{ project_name }}.{{ apps_hostname_suffix }} -n {{ project_name }} | {{ openshift_cli }} create -f - -n {{ project_name }}"
+  ignore_errors: true
+
+- name: deploy netflix oss in {{ project_name }}
+  shell: "{{ openshift_cli }} create -f {{ netflix_oss_template }} -n {{ project_name }}"
+  ignore_errors: true
+  when: enable_netflix
+
+- name: deploy inventory blue and green deployments in {{ project_name }}
+  shell: |
+    {{ openshift_cli }} delete all,pvc -l app=inventory --now --ignore-not-found -n {{ project_name }}
+    {{ openshift_cli }} process -f {{ bluegreen_deployment_template }} --param=APP_VERSION_BLUE=prod-blue --param=APP_VERSION_GREEN=prod-green --param=HOSTNAME_SUFFIX={{ project_name }}.{{ apps_hostname_suffix }} -n {{ project_name }} | {{ openshift_cli }} create -f - -n {{ project_name }}
+  when: enable_bluegreen

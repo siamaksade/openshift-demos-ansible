@@ -1,15 +1,15 @@
 ---
 ## Gogs Git Server Install
-- name: set Gogs route fact
+- name: set gogs route fact
   set_fact:
-    gogs_route: "{{ 'gogs-' + project_name + '.' + gogs_hostname }}"
-    
-- name: check if Gogs exists
-  shell: "oc get service gogs -n {{ project_name }}"
+    gogs_route: "{{ 'gogs-' + project_name + '.' + apps_hostname_suffix }}"
+
+- name: check if gogs exists
+  shell: "{{ openshift_cli }} get service gogs -n {{ project_name }}"
   register: install_gogs
   ignore_errors: true
 
 - import_tasks: deploy.yml
   when: install_gogs | failed
 
-- import_tasks: configure.yml
+- import_tasks: create_users.yml

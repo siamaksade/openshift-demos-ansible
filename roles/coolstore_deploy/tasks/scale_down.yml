@@ -1,0 +1,29 @@
+---
+# Scale Down CoolStore Microservices
+- name: prune deployments in {{ project_name }}
+  shell: "{{ openshift_cli }} delete dc,svc,route,pvc,cm -l {{ prune_by_selector }} -n {{ project_name }}"
+  ignore_errors: true
+  when: >
+    prune_by_selector is defined and 
+    prune_by_selector is not none and 
+    prune_by_selector|trim() != ""
+
+- name: get candidates to scale down in {{ project_name }}
+  shell: "{{ openshift_cli }} get dc -l {{ scale_down_by_selector }} -o=custom-columns=:.metadata.name -n {{ project_name }}"
+  register: scaledown_result
+  ignore_errors: true
+  when: >
+    scale_down_by_selector is defined and 
+    scale_down_by_selector is not none and 
+    scale_down_by_selector|trim() != ""
+
+- name: scale deployments down in {{ project_name }}
+  shell: |
+    {{ openshift_cli }} rollout cancel dc/{{ item }} -n {{ project_name }}
+    {{ openshift_cli }} scale --replicas=0 dc {{ item }} -n {{ project_name }}
+  with_items: "{{ scaledown_result.stdout.split() }}"
+  ignore_errors: true
+  when: >
+    scale_down_by_selector is defined and 
+    scale_down_by_selector is not none and 
+    scale_down_by_selector|trim() != ""

@@ -1,0 +1,32 @@
+---
+## Deploy CoolStore Demo Guide
+- name: check if demo guide exists
+  shell: "{{ openshift_cli }} get service guides -n {{ project_name }}"
+  register: install_guides
+  ignore_errors: true
+
+- name: deploy coolstore demo guide
+  shell: |
+    {{ openshift_cli }} new-app --name=guides --docker-image=osevg/workshopper:latest -n {{ project_name }} \
+        -e WORKSHOPS_URLS={{ guides_workshop_urls }} \
+        -e CONTENT_URL_PREFIX={{ guides_content_url }} \
+        -e PROJECT_SUFFIX={{ project_suffix }} \
+        -e GOGS_URL={{ gogs_url }} \
+        -e GOGS_DEV_REPO_URL_PREFIX={{ gogs_url }}/{{ gogs_user }}/coolstore-microservice \
+        -e JENKINS_URL=http://jenkins-{{ prod_hostname_suffix }} \
+        -e COOLSTORE_WEB_PROD_URL=http://web-ui-{{ prod_hostname_suffix }} \
+        -e HYSTRIX_PROD_URL=http://hystrix-dashboard-{{ prod_hostname_suffix }} \
+        -e GOGS_DEV_USER={{ gogs_user }} \
+        -e GOGS_DEV_PASSWORD={{ gogs_password }} \
+        -e GOGS_REVIEWER_USER={{ gogs_admin_user }} \
+        -e GOGS_REVIEWER_PASSWORD={{ gogs_admin_password }}
+    {{ openshift_cli }} expose svc/guides -n {{ project_name }}
+  when: install_guides|failed
+
+- name: set demo guide probes
+  shell: "{{ openshift_cli }} set probe dc/guides -n {{ project_name }} --readiness --liveness --get-url=http://:8080/ --failure-threshold=5 --initial-delay-seconds=30"
+  when: install_guides|failed
+
+- name: set demo guide cpu and mem resources
+  shell: "{{ openshift_cli }} set resources dc/guides --limits=cpu=500m,memory=1Gi --requests=cpu=100m,memory=512Mi -n {{ project_name }}"
+  when: install_guides|failed

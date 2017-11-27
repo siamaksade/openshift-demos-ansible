@@ -1,0 +1,86 @@
+---
+- name: Idle Coolstore Microservices Demo
+  hosts: localhost
+  gather_facts: false
+  run_once: true
+  tasks:
+  - include_role:
+      name: common
+
+  # idle default project
+  - name: check if {{ project_default }} exists
+    shell: "{{ openshift_cli }} get project {{ project_default }}"
+    register: result
+    ignore_errors: true
+
+  - include_role:
+      name: idle_project
+    vars:
+      project_name: "{{ project_default }}"
+      idle: false
+    when: result|success
+
+  # idle prod project
+  - name: check if {{ project_cicd }} exists
+    shell: "{{ openshift_cli }} get project {{ project_cicd }}"
+    register: result
+    ignore_errors: true
+
+  - include_role:
+      name: idle_project
+    vars:
+      project_name: "{{ project_cicd }}"
+      idle: false
+    when: result|success
+
+  # idle prod project
+  - name: check if {{ project_prod }} exists
+    shell: "{{ openshift_cli }} get project {{ project_prod }}"
+    register: result
+    ignore_errors: true
+
+  - include_role:
+      name: idle_project
+    vars:
+      project_name: "{{ project_prod }}"
+      idle: false
+    when: result|success
+
+  # idle stage project
+  - name: check if {{ project_stage }} exists
+    shell: "{{ openshift_cli }} get project {{ project_stage }}"
+    register: result
+    ignore_errors: true
+
+  - include_role:
+      name: idle_project
+    vars:
+      project_name: "{{ project_stage }}"
+      idle: false
+    when: result|success
+
+  # idle test project
+  - name: check if {{ project_test }} exists
+    shell: "{{ openshift_cli }} get project {{ project_test }}"
+    register: result
+    ignore_errors: true
+
+  - include_role:
+      name: idle_project
+    vars:
+      project_name: "{{ project_test }}"
+      idle: false
+    when: result|success
+
+  # idle dev project
+  - name: check if {{ project_dev }} exists
+    shell: "{{ openshift_cli }} get project {{ project_dev }}"
+    register: result
+    ignore_errors: true
+
+  - include_role:
+      name: idle_project
+    vars:
+      project_name: "{{ project_dev }}"
+      idle: false
+    when: result|success

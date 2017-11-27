@@ -1,0 +1,37 @@
+---
+- name: Deploy Coolstore Microservices Demo
+  hosts: localhost
+  gather_facts: false
+  run_once: true
+  vars_files:
+    - demo_vars/msa/all
+
+  tasks:
+    - include_role:
+        name: common
+
+    - import_role:
+        name: create_project
+      vars:
+        project_name: "{{ project_default }}"
+        project_display_name: "{{ project_default_name }}"
+        project_desc: "{{ project_default_desc }}"
+        project_annotations: "demo=demo-modern-arch-{{ project_suffix }}"
+
+    - import_role:
+        name: coolstore_build_images
+      vars:
+        project_name: "{{ project_default }}"
+        prune_by_selector: "comp-required!=true"
+
+    - import_role:
+        name: coolstore_deploy
+      vars:
+        project_name: "{{ project_default }}"
+        enable_netflix: true
+        prune_by_selector: "comp-required!=true"
+
+    - import_role:
+        name: remove_persistence
+      vars:
+        project_name: "{{ project_default }}"

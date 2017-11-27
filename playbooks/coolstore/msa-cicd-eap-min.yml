@@ -1,0 +1,107 @@
+---
+- name: Deploy Coolstore Microservices Demo - CI/CD with JBoss EAP
+  hosts: localhost
+  gather_facts: false
+  run_once: true
+  vars_files:
+    - demo_vars/msa-cicd-eap/all
+
+  tasks:
+    - include_role:
+        name: common
+
+    - import_role:
+        name: create_project
+      vars:
+        project_name: "{{ project_cicd }}"
+        project_display_name: "{{ project_cicd_name }}"
+        project_desc: "{{ project_cicd_desc }}"
+        project_annotations: "demo=demo-modern-arch-{{ project_suffix }}"
+
+    - import_role:
+        name: create_project
+      vars:
+        project_name: "{{ project_prod }}"
+        project_display_name: "{{ project_prod_name }}"
+        project_desc: "{{ project_prod_desc }}"
+        project_annotations: "demo=demo-modern-arch-{{ project_suffix }}"
+        accessible_to_project: "{{ project_cicd }}"
+
+    - import_role:
+        name: create_project
+      vars:
+        project_name: "{{ project_test }}"
+        project_display_name: "{{ project_test_name }}"
+        project_desc: "{{ project_test_desc }}"
+        project_annotations: "demo=demo-modern-arch-{{ project_suffix }}"
+        accessible_to_project: "{{ project_cicd }}"
+
+    - import_role:
+        name: create_project
+      vars:
+        project_name: "{{ project_dev }}"
+        project_display_name: "{{ project_dev_name }}"
+        project_desc: "{{ project_dev_desc }}"
+        project_annotations: "demo=demo-modern-arch-{{ project_suffix }}"
+        accessible_to_project: "{{ project_cicd }}"
+
+    - import_role:
+        name: nexus
+      vars:
+        project_name: "{{ project_cicd }}"
+      when: maven_mirror_url is none or maven_mirror_url == ''
+
+    - import_role:
+        name: gogs
+      vars:
+        project_name: "{{ project_cicd }}"
+
+    - import_role:
+        name: jenkins
+      vars:
+        project_name: "{{ project_cicd }}"
+
+    - import_role:
+        name: coolstore_guides
+      vars:
+        project_name: "{{ project_cicd }}"
+        guides_yaml: demo-cicd-eap-min.yml
+      when: deploy_guides
+
+    - import_role:
+        name: coolstore_build_images
+      vars:
+        project_name: "{{ project_prod }}"
+
+    - include_role:
+        name: coolstore_tag_images
+      vars:
+        from_project: "{{ project_prod }}"
+        to_project: "{{ project_prod }}"
+        tag: "prod"
+        bluegreen_image: "inventory"
+
+    - include_role:
+        name: coolstore_deploy
+      vars:
+        project_name: "{{ project_prod }}"
+        image_version: "prod"
+        enable_bluegreen: true
+        enable_netflix: true
+        prune_by_selector: ""
+        prune_by_selector: "comp-required!=true,app!=inventory,app!=cart"
+
+    - include_role:
+        name: remove_persistence
+      vars:
+        project_name: "{{ project_prod }}"
+
+    - import_role:
+        name: coolstore_inventory_pipeline
+      vars:
+        simple_pipeline: true
+
+    - include_role:
+        name: remove_persistence
+      vars:
+        project_name: "{{ project_test }}"

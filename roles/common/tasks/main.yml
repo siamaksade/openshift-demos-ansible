@@ -1,12 +1,51 @@
 ---
-# get openshift apps hostname
-- name: create dummy route to calculate hostnames
-  shell: "oc create route edge dummy --service=dummy --port=8080 -n {{ project_name }}"
+# Common Facts
 
-- name: get dummy route to calculate hostnames
-  shell: "oc get route dummy -o=go-template --template={%raw%}'{{ .spec.host }}'{%endraw%} -n {{ project_name }}"
-  register: dummy_route_result
+# set openshift master
+- name: get openshift master
+  shell: "oc whoami --show-server"
+  register: openshift_master_result
+  when: openshift_master is not defined
 
-- name: set fact for routes hostname
+- name: set openshift master fact
   set_fact:
-    apps_hostname: "{{ dummy_route_result.stdout|regex_replace('^dummy-' + project_name + '\\.(.*)$', '\\1') }}"
+    openshift_master: "{{ openshift_master_result.stdout }}"
+  when: openshift_master is not defined
+
+- name: set openshift cli options
+  set_fact:
+    openshift_cli: "oc --server={{ openshift_master }} --insecure-skip-tls-verify=true"
+  
+# set kube config
+- name: check if kube config dir exists
+  stat:
+    path: "{{ oc_kube_config }}"
+  register: kube_config_result
+  when: >
+    oc_kube_config is defined and 
+    oc_kube_config is not none and 
+    oc_kube_config|trim() != ""
+
+- name: set openshift cli options
+  set_fact:
+    openshift_cli: "{{ openshift_cli }} --config={{ oc_kube_config }}"
+  when: > 
+    oc_kube_config is defined and
+    oc_kube_config is not none and 
+    oc_kube_config|trim() != "" and
+    kube_config_result.stat.exists and
+    kube_config_result.stat.isdir
+
+# set auth token
+- name: set openshift cli options
+  set_fact:
+    openshift_cli: "{{ openshift_cli }} --token={{ oc_token }}"
+  when: oc_token is defined
+  when: >
+    oc_token is defined and 
+    oc_token is not none and 
+    oc_token|trim() != ""
+
+# set hostname suffix
+- import_tasks: hostname_suffix.yml
+  when: set_hostname_suffix

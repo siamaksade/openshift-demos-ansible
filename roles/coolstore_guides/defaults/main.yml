@@ -1,0 +1,10 @@
+---
+guides_yaml: demo-cicd-eap.yml
+guides_content_url: https://raw.githubusercontent.com/osevg/workshopper-content/master
+guides_workshop_urls: "{{ guides_content_url }}/_workshops/{{ guides_yaml }}"
+gogs_url: "http://gogs-{{ project_name }}.{{ apps_hostname_suffix }}"
+gogs_admin_user: team
+gogs_admin_password: team
+gogs_user: developer
+gogs_password: developer
+prod_hostname_suffix: "{{ project_prod }}.{{ apps_hostname_suffix }}"

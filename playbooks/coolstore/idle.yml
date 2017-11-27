@@ -1,0 +1,35 @@
+---
+- name: Idle Coolstore Microservices Demo
+  hosts: localhost
+  gather_facts: false
+  run_once: true
+  tasks:
+  - include_role:
+      name: idle_project
+    vars:
+      project_name: "{{ project_default }}"
+
+  - include_role:
+      name: idle_project
+    vars:
+      project_name: "{{ project_cicd }}"
+
+  - include_role:
+      name: idle_project
+    vars:
+      project_name: "{{ project_prod }}"
+
+  - include_role:
+      name: idle_project
+    vars:
+      project_name: "{{ project_stage }}"
+
+  - include_role:
+      name: idle_project
+    vars:
+      project_name: "{{ project_test }}"
+
+  - include_role:
+      name: idle_project
+    vars:
+      project_name: "{{ project_dev }}"

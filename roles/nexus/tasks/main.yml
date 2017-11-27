@@ -1,21 +1,27 @@
 ---
 ## Sonatype Nexus Install
-- name: check if Nexus exists
-  shell: "oc get service nexus -n {{ project_name }}"
+- name: check if nexus exists
+  shell: "{{ openshift_cli }} get service nexus -n {{ project_name }}"
   register: install_nexus
   ignore_errors: true
 
-- name: deploy Nexus template
-  shell: "oc new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{ nexus_version }}-persistent-template.yaml --param=VOLUME_CAPACITY={{ nexus_volume_capacity }} --param=MAX_MEMORY={{ nexus_max_memory }} --param=NEXUS_VERSION={{ nexus_image_version }} -n {{ project_name }}"
+- name: deploy nexus template
+  shell: "{{ openshift_cli }} new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{ nexus_version }}-persistent-template.yaml --param=VOLUME_CAPACITY={{ nexus_volume_capacity }} --param=MAX_MEMORY={{ nexus_max_memory }} --param=NEXUS_VERSION={{ nexus_image_version }} -n {{ project_name }}"
   when: (install_nexus | failed) and (not ephemeral)
 
-- name: deploy Nexus template
-  shell: "oc new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{ nexus_version }}-template.yaml --param=MAX_MEMORY={{ nexus_max_memory }} --param=NEXUS_VERSION={{ nexus_image_version }} -n {{ project_name }}"
+- name: deploy nexus template
+  shell: "{{ openshift_cli }} new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{ nexus_version }}-template.yaml --param=MAX_MEMORY={{ nexus_max_memory }} --param=NEXUS_VERSION={{ nexus_image_version }} -n {{ project_name }}"
   when: (install_nexus | failed) and ephemeral
 
-- name: wait for Nexus to be running
-  shell: "oc get dc/nexus -o yaml -n {{ project_name }}"
+- name: set nexus route fact
+  set_fact:
+    nexus_route: "{{ 'nexus-' + project_name + '.' + apps_hostname_suffix }}"
+
+- name: wait for nexus to be running
+  uri:
+    url: http://{{ nexus_route }}
+    status_code: 200
   register: result
-  until: '"availableReplicas: 1" in result.stdout'
-  retries: 5
-  delay: 60
+  until: result.status == 200
+  retries: 10
+  delay: 30

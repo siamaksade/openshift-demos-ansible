@@ -1,0 +1,10 @@
+---
+pipeline_template: https://raw.githubusercontent.com/{{ github_account }}/coolstore-microservice/{{ github_ref }}/openshift/templates/inventory-pipeline-template.yaml
+simple_pipeline_template: https://raw.githubusercontent.com/{{ github_account }}/coolstore-microservice/{{ github_ref }}/openshift/templates/inventory-pipeline-template-simple.yaml
+inventory_template: https://raw.githubusercontent.com/{{ github_account }}/coolstore-microservice/{{ github_ref }}/openshift/templates/inventory-template.json
+
+simple_pipeline: false
+
+gogs_url: "http://gogs-{{ project_cicd }}.{{ apps_hostname_suffix }}"
+gogs_user: developer
+gogs_admin_user: team

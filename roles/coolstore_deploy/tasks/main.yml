@@ -1,12 +1,11 @@
 ---
-## Deploy Coolstore Microservices
-
-- import_tasks: build_images.yml
-
-- name: check if prod is deployed
-  shell: "oc get dc web-ui -n {{ project_prod }}"
-  register: prod_deployed_result
+# Deploy CoolStore Microservices
+- name: check if coolstore is deployed in {{ project_name }}
+  shell: "{{ openshift_cli }} get dc web-ui -n {{ project_name }}"
+  register: deployed_result
   ignore_errors: true
 
-- import_tasks: deploy_prod.yml
-  when: prod_deployed_result | failed
+- import_tasks: deploy.yml
+  when: deployed_result | failed
+
+- import_tasks: scale_down.yml

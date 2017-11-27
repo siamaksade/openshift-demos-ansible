@@ -1,0 +1,29 @@
+---
+# Configure CoolStore Pipeline
+
+- import_tasks: configure_gogs.yml
+
+- name: check if coolstore pipeline is deployed
+  shell: "{{ openshift_cli }} get bc inventory-pipeline -n {{ project_cicd }}"
+  register: pipeline_deployed_result
+  ignore_errors: true
+
+- import_tasks: deploy_pipeline.yml
+  when: pipeline_deployed_result | failed
+
+- name: create inventory in test
+  shell: "{{ openshift_cli }} process -f {{ inventory_template }} --param=GIT_URI={{ gogs_url}}/{{ gogs_admin_user }}/coolstore-microservice.git --param=GIT_REF=master --param=MAVEN_MIRROR_URL={{ maven_mirror_url }} -n {{ project_test }} | {{ openshift_cli }} create -f - -n {{ project_test }}"
+  ignore_errors: true
+
+- name: check if inventory template is installed in dev
+  shell: "{{ openshift_cli }} get template inventory -n {{ project_dev }}"
+  register: inventory_template_deploy_result
+  ignore_errors: true
+
+- name: install inventory template
+  shell: >
+    curl -sL {{ inventory_template }} | tr -d '\n' | tr -s '[:space:]' \
+      | sed "s|\"MAVEN_MIRROR_URL\", \"value\": \"\"|\"MAVEN_MIRROR_URL\", \"value\": \"{{ maven_mirror_url }}\"|g" \
+      | sed "s|\"https://github.com/jbossdemocentral/coolstore-microservice\"|\"{{ gogs_url }}/{{ gogs_user }}/coolstore-microservice.git\"|g" \
+      | {{ openshift_cli }} create -f - -n {{ project_dev }}
+  when: inventory_template_deploy_result | failed

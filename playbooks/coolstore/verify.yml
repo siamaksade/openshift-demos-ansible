@@ -1,0 +1,81 @@
+---
+- name: Verify Coolstore Microservices Demo
+  hosts: localhost
+  gather_facts: false
+  run_once: true
+  tasks:
+  - include_role:
+      name: common
+      
+  # verify default project
+  - name: check if project {{ project_default }} exists
+    shell: "{{ openshift_cli }} get project {{ project_default }}"
+    register: result
+    ignore_errors: true
+
+  - include_role:
+      name: verify_deployments
+    vars:
+      project_name: "{{ project_default }}"
+    when: result | success
+
+  # verify ci/cd project
+  - name: check if project {{ project_cicd }} exists
+    shell: "{{ openshift_cli }} get project {{ project_cicd }}"
+    register: result
+    ignore_errors: true
+
+  - include_role:
+      name: verify_deployments
+    vars:
+      project_name: "{{ project_cicd }}"
+    when: result | success
+
+  # verify prod project
+  - name: check if project {{ project_prod }} exists
+    shell: "{{ openshift_cli }} get project {{ project_prod }}"
+    register: result
+    ignore_errors: true
+
+  - include_role:
+      name: verify_deployments
+    vars:
+      project_name: "{{ project_prod }}"
+    when: result | success
+
+  # verify stage project
+  - name: check if project {{ project_stage }} exists
+    shell: "{{ openshift_cli }} get project {{ project_stage }}"
+    register: result
+    ignore_errors: true
+
+  - include_role:
+      name: verify_deployments
+    vars:
+      project_name: "{{ project_stage }}"
+    when: result | success
+
+  # verify test project
+  - name: check if project {{ project_test }} exists
+    shell: "{{ openshift_cli }} get project {{ project_test }}"
+    register: result
+    ignore_errors: true
+
+  - include_role:
+      name: verify_deployments
+    vars:
+      project_name: "{{ project_test }}"
+    when: result | success
+
+
+  # verify dev project
+  - name: check if project {{ project_dev }} exists
+    shell: "{{ openshift_cli }} get project {{ project_dev }}"
+    register: result
+    ignore_errors: true
+
+  - include_role:
+      name: verify_deployments
+    vars:
+      project_name: "{{ project_dev }}"
+    when: result | success

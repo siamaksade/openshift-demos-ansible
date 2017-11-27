@@ -1,0 +1,60 @@
+---
+# Create Project
+- name: create project {{ project_name }}
+  shell: "{{ openshift_cli }} new-project {{ project_name }} --display-name='{{ project_display_name }}' --description='{{ project_desc }}'"
+  ignore_errors: true
+  tags:
+    - privilleged
+
+- name: configure service accounts in {{ project_name }} as admin to {{ project_name }}
+  shell: "oc adm policy add-role-to-group admin system:serviceaccounts:{{ project_name }} -n {{ project_name }}"
+  ignore_errors: true
+  tags:
+    - privilleged
+
+- name: configure service accounts as admin to {{ project_name }}
+  shell: "oc adm policy add-role-to-group admin system:serviceaccounts:{{ accessible_to_project }} -n {{ project_name }}"
+  ignore_errors: true
+  when: >
+    accessible_to_project is defined and
+    accessible_to_project is not none and
+    accessible_to_project|trim() != ""
+  tags:
+    - privilleged
+
+- name: join project {{ project_name }} with project {{ accessible_to_project }} network
+  shell: "oc adm pod-network join-projects --to={{ accessible_to_project }} {{ project_name }}"
+  ignore_errors: true
+  when: >
+    accessible_to_project is defined and
+    accessible_to_project is not none and
+    accessible_to_project|trim() != ""
+  tags:
+    - privilleged
+    - admin
+
+- name: configure service accounts in other projects as admin in {{ project_name }}
+  shell: "oc adm policy add-role-to-group admin system:serviceaccounts:{{ project_name }} -n {{ project_name }}"
+  ignore_errors: true
+  tags:
+    - privilleged
+
+- name: assign user {{ project_admin }} as project admin in {{ project_name }}
+  shell: "oc adm policy add-role-to-user admin {{ project_admin }} -n {{ project_name }}"
+  ignore_errors: true
+  when: >
+    project_admin is defined and
+    project_admin is not none and
+    project_admin|trim() != ""
+
+- name: annotate project {{ project_name }}
+  shell: "oc annotate --overwrite namespace {{ project_name }} {{ project_annotations }}"
+  ignore_errors: true
+  when: >
+    project_annotations is defined and
+    project_annotations is not none and
+    project_annotations|trim() != ""
+  tags:
+    - privilleged
+    - admin
+

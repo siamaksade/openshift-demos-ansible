@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: coolstore-ansible-installer
+parameters:
+- displayName: Ansible Image
+  value: "openshift/origin-ansible:v3.7"
+  name: ANSIBLE_IMAGE
+  required: true
+- displayName: Playbooks Git Repo
+  value: "https://github.com/siamaksade/openshift-demos-ansible"
+  name: GITHUB_REPO
+  required: true
+- displayName: Playbooks Git Ref
+  value: "master"
+  name: GITHUB_REF
+  required: true
+- displayName: CoolStore Demo Name
+  description: The name of the coolstore demo to deploy e.g. msa-cicd-eap-full, msa-cicd-eap-min, msa-full, msa-min
+  value: "msa-cicd-eap-full"
+  name: COOLSTORE_DEMO_NAME
+  required: true
+- displayName: CoolStore GitHub Account
+  value: "jbossdemocentral"
+  name: COOLSTORE_GITHUB_ACCOUNT
+  required: true
+- displayName: CoolStore GitHub Ref
+  value: "stable-ocp-3.7"
+  name: COOLSTORE_GITHUB_REF
+  required: true
+- displayName: Maven Mirror URL
+  name: MAVEN_MIRROR_URL
+- displayName: Project Suffix
+  description: Suffix to add to project names e.g. cicd-[SUFFIX]
+  name: PROJECT_SUFFIX
+  value: demo
+  required: true
+- displayName: Ephemeral
+  description: Deploy without persistent storage
+  name: EPHEMERAL
+  value: "false"
+  required: true
+- displayName: Deploy Guides
+  name: DEPLOY_GUIDES
+  value: "true"
+  required: true
+objects:
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    name: coolstore-ansible-installer
+  spec:
+    activeDeadlineSeconds: 1800
+    completions: 1
+    parallelism: 1
+    template:
+      spec:
+        containers:
+        - env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          command:
+          - /bin/bash
+          - -x
+          - -c
+          - |
+            curl -o /tmp/openshift-demos-ansible-${GITHUB_REF}.tar.gz https://github.com/siamaksade/openshift-demos-ansible/archive/${GITHUB_REF}.tar.gz
+            cd /tmp
+            tar xvfz /tmp/openshift-demos-ansible-${GITHUB_REF}.tar.gz
+            cd openshift-demos-ansible-${GITHUB_REF}
+            ansible-playbook demos/coolstore/${DEMO_NAME}.yml -e "github_account=${COOLSTORE_GITHUB_ACCOUNT} github_ref=${COOLSTORE_GITHUB_REF} maven_mirror_url=${MAVEN_MIRROR_URL} project_suffix=${PROJECT_SUFFIX} ephemeral=${EPHEMERAL} deploy_guides=${DEPLOY_GUIDES}"
+          image: ${ANSIBLE_IMAGE}
+          name: coolstore-ansible-installer-job
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        restartPolicy: Never

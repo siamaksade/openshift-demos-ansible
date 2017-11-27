@@ -1,0 +1,9 @@
+---
+# idle/unidle projects
+- name: idling project {{ project_name }}
+  shell: "{{ openshift_cli }} idle -n {{ project_name }} --all"
+  ignore_errors: true
+  when: idle
+
+- include_tasks: unidle.yml
+  when: not idle
