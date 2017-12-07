@@ -50,6 +50,6 @@ $ ansible-playbook demos/coolstore/msa-min.yml -e "github_ref=stable-ocp-3.7 eph
 | `project_suffix`     | demo      | A suffix to be added to all project names e.g. cicd-demo                              |
 | `ephemeral`          | false     | If set to true, all pods will be deployed without persistent storage                  |
 | `maven_mirror_url`   | false     | Maven repository for Java S2I builds. If empty, Sonatype Nexus gets deployed and used                       |
-| `github_account`     | master    | GitHub account to deploy from in forked: https://github.com/[github-account]]/coolstore-microservice |
+| `github_account`     | master    | GitHub account to deploy from in forked: https://github.com/[github-account]/coolstore-microservice |
 | `github_ref`         | master    | GitHub branch to deploy from: https://github.com/jbossdemocentral/coolstore-microservice |
 | `project_admin`      | none      | OpenShift user to be assigned as the project admin. Default is the logged-in user |
