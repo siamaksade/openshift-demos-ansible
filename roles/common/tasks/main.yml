@@ -40,7 +40,6 @@
 - name: set openshift cli options
   set_fact:
     openshift_cli: "{{ openshift_cli }} --token={{ oc_token }}"
-  when: oc_token is defined
   when: >
     oc_token is defined and 
     oc_token is not none and 
