@@ -12,8 +12,8 @@
     vars:
       set_hostname_suffix: false
 
-  - name: check if {{ project_default }} exists
-    shell: "{{ openshift_cli }} get project {{ project_default }}"
+  - name: check if {{ project_name }} exists
+    shell: "{{ openshift_cli }} get project {{ project_name }}"
     register: result
     ignore_errors: true
 
