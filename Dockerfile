@@ -1,10 +1,9 @@
 FROM openshift/origin-ansible:v3.7
 
-RUN mkdir -p /opt/demos
-WORKDIR /opt/demos
+WORKDIR /opt/app-root/src/
 
-ADD playbooks /opt/demos/playbooks
-ADD roles /opt/demos/roles
+ADD playbooks /opt/app-root/src/playbooks
+ADD roles /opt/app-root/src/roles
 ADD ansible.cfg /opt/app-root/src/
 
 
