@@ -1,25 +1,64 @@
 ---
 ## Sonatype Nexus Install
-- name: check if nexus exists
-  shell: "{{ openshift_cli }} get service nexus -n {{ project_name }}"
-  register: install_nexus
+
+# create project
+- name: check if nexus project {{ project_name }} exists
+  shell: "{{ openshift_cli }} get project {{ project_name }}"
+  register: nexus_project_result
   ignore_errors: true
 
-- name: deploy nexus template
-  shell: "{{ openshift_cli }} new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{ nexus_version }}-persistent-template.yaml --param=VOLUME_CAPACITY={{ nexus_volume_capacity }} --param=MAX_MEMORY={{ nexus_max_memory }} --param=NEXUS_VERSION={{ nexus_image_version }} -n {{ project_name }}"
-  when: (install_nexus | failed) and (not ephemeral)
+- name: create gogs project {{ project_name }}
+  shell: "{{ openshift_cli }} new-project {{ project_name }} --display-name='{{ project_display_name }}' --description='{{ project_desc }}'"
+  when: nexus_project_result|failed
 
-- name: deploy nexus template
-  shell: "{{ openshift_cli }} new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{ nexus_version }}-template.yaml --param=MAX_MEMORY={{ nexus_max_memory }} --param=NEXUS_VERSION={{ nexus_image_version }} -n {{ project_name }}"
-  when: (install_nexus | failed) and ephemeral
+- name: assign user {{ project_admin }} as project admin in {{ project_name }}
+  shell: "oc adm policy add-role-to-user admin {{ project_admin }} -n {{ project_name }}"
+  ignore_errors: true
+  when: >
+    nexus_project_result|failed and
+    project_admin is defined and
+    project_admin is not none and
+    project_admin|trim() != ""
 
-- name: set nexus route fact
-  set_fact:
-    nexus_route: "{{ 'nexus-' + project_name + '.' + apps_hostname_suffix }}"
+- name: annotate project project {{ project_name }}
+  shell: "oc annotate --overwrite namespace {{ project_name }} {{ project_annotations }}"
+  ignore_errors: true
+  when: >
+    nexus_project_result|failed and
+    project_annotations is defined and
+    project_annotations is not none and
+    project_annotations|trim() != ""
+
+# deploy nexus    
+- name: check if nexus exists
+  shell: "{{ openshift_cli }} get service nexus -n {{ project_name }}"
+  register: nexus_result
+  ignore_errors: true
+
+- name: deploy nexus template (persistent)
+  shell: |
+    {{ openshift_cli }} new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{ nexus_version }}-persistent-template.yaml \
+        --param=VOLUME_CAPACITY={{ nexus_volume_capacity }} \
+        --param=MAX_MEMORY={{ nexus_max_memory }} \
+        --param=NEXUS_VERSION={{ nexus_image_version }} \
+        -n {{ project_name }}
+  when: nexus_result|failed and not ephemeral
+
+- name: deploy nexus template (ephemeral)
+  shell: |
+    {{ openshift_cli }} new-app -f https://raw.githubusercontent.com/OpenShiftDemos/nexus/master/nexus{{ nexus_version }}-template.yaml \
+        --param=MAX_MEMORY={{ nexus_max_memory }} \
+        --param=NEXUS_VERSION={{ nexus_image_version }} \
+        -n {{ project_name }}
+  when: nexus_result|failed and ephemeral
+
+- name: get nexus route
+  shell: "{{ openshift_cli }} get route nexus -n {{ project_name }}"
+  register: nexus_result
 
 - name: wait for nexus to be running
   uri:
-    url: http://{{ nexus_route }}
+    url: http://{{ nexus_result.stdout|from_json|json_query('.spec.host') }}
     status_code: 200
   register: result
   until: result.status == 200

@@ -9,7 +9,6 @@
 
 - name: create gogs project {{ project_name }}
   shell: "{{ openshift_cli }} new-project {{ project_name }} --display-name='{{ project_display_name }}' --description='{{ project_desc }}'"
-  ignore_errors: true
   when: gogs_project_result|failed
 
 - name: assign user {{ project_admin }} as project admin in {{ project_name }}

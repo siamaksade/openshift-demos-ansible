@@ -1,4 +1,13 @@
 nexus_version: 3
+
 nexus_volume_capacity: 10Gi
 nexus_max_memory: 2Gi
+
 nexus_image_version: 3.6.1
+
+project_name: nexus
+project_display_name: Nexus
+project_desc: Nexus Repository Manager
+# project_annotations:
+
+openshift_cli: oc
