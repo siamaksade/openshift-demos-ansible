@@ -1,1 +1,13 @@
 ---
+project_name: jenkins
+project_display_name: Jenkins
+project_desc: Jenkins CI Server
+# project_annotations:
+
+openshift_cli: oc
+
+jenkins_max_mem: 2Gi
+jenkins_min_mem: 512Mi
+
+jenkins_max_cpu: 1
+jenkins_min_cpu: 200m
