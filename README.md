@@ -33,6 +33,15 @@ on any OpenShift environment:
       ansible-playbook demos/coolstore/msa-cicd-eap-full.yml -e "github_ref=stable-ocp-3.7"
   ```
 
+### Run Playbooks on OpenShift (with system:admin)
+
+```
+$ oc new-project demo-installer
+$ oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:demo-installer:default
+$ oc process -f helpers/coolstore-ansible-installer.yaml --param=COOLSTORE_DEMO_NAME=msa-cicd-eap-min | oc create -f - -n demo-installer
+$ oc delete project demo-installer
+```
+
 ### Variables
 
 You can modify the playbooks behaviour by specifying extra variables
