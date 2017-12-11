@@ -46,18 +46,18 @@
         accessible_to_project: "{{ project_cicd }}"
 
     - import_role:
-        name: nexus
+        name: openshift_nexus
       vars:
         project_name: "{{ project_cicd }}"
       when: maven_mirror_url is none or maven_mirror_url == ''
 
     - import_role:
-        name: gogs
+        name: openshift_gogs
       vars:
         project_name: "{{ project_cicd }}"
 
     - import_role:
-        name: jenkins
+        name: openshift_jenkins
       vars:
         project_name: "{{ project_cicd }}"
 
