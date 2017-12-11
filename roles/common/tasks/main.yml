@@ -1,22 +1,46 @@
 ---
 # Common Facts
 
-# set openshift master
+# set openshift master fact
 - name: get openshift master
   shell: "oc whoami --show-server"
   register: openshift_master_result
-  when: openshift_master is not defined
+  when: >
+    openshift_master is not defined or
+    openshift_master is none or
+    openshift_master|trim() == ""
 
 - name: set openshift master fact
   set_fact:
     openshift_master: "{{ openshift_master_result.stdout }}"
-  when: openshift_master is not defined
+  when: >
+    openshift_master is not defined or
+    openshift_master is none or
+    openshift_master|trim() == ""
 
-- name: set openshift cli options
+# set openshift user
+- name: get openshift user
+  shell: "oc whoami"
+  register: openshift_user_result
+  when: >
+    project_admin is not defined or
+    project_admin is none or
+    project_admin|trim() == ""
+
+- name: set openshift user fact
+  set_fact:
+    openshift_user: "{{ openshift_user_result.stdout }}"
+  when: >
+    project_admin is not defined or
+    project_admin is none or
+    project_admin|trim() == ""
+
+# set cli options (.server)
+- name: set openshift cli options (server)
   set_fact:
     openshift_cli: "oc --server={{ openshift_master }} --insecure-skip-tls-verify=true"
   
-# set kube config
+# set cli options (.kube)
 - name: check if kube config dir exists
   stat:
     path: "{{ oc_kube_config }}"
@@ -26,7 +50,7 @@
     oc_kube_config is not none and 
     oc_kube_config|trim() != ""
 
-- name: set openshift cli options
+- name: set openshift cli options (.kube)
   set_fact:
     openshift_cli: "{{ openshift_cli }} --config={{ oc_kube_config }}"
   when: > 
@@ -37,7 +61,26 @@
     kube_config_result.stat.isdir
 
 # set auth token
-- name: set openshift cli options
+- name: check if token file exists
+  stat:
+    path: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+  register: token_result
+  when: >
+    oc_token is not defined or
+    oc_token is none or
+    oc_token|trim() == ""
+
+- name: check if token file exists
+  set_fact:
+    oc_token: "{{ lookup('file', '/var/run/secrets/kubernetes.io/serviceaccount/token') }}"
+    running_on_openshift: true
+  when: >
+    (oc_token is not defined or
+    oc_token is none or
+    oc_token|trim() == "") and
+    token_result.stat.exists
+
+- name: set openshift cli options with token
   set_fact:
     openshift_cli: "{{ openshift_cli }} --token={{ oc_token }}"
   when: >
@@ -47,4 +90,4 @@
 
 # set hostname suffix
 - import_tasks: hostname_suffix.yml
-  when: set_hostname_suffix
+  when: set_hostname_suffi
