@@ -1,13 +1,20 @@
 ---
 gogs_image_version: 0.11.29
 
+gogs_route: gogs-{{ project_name }}.127.0.0.1.nip.io
+
 gogs_admin_user: team
 gogs_admin_password: team
 
 gogs_user: developer
 gogs_password: developer
 
-gogs_hostname: 127.0.0.1.nip.io
-
 gogs_generate_user_count: 0
 gogs_generate_user_format: user%02d
+
+project_name: gogs
+project_display_name: Gogs
+project_desc: Gogs Git Server
+# project_annotations:
+
+openshift_cli: oc

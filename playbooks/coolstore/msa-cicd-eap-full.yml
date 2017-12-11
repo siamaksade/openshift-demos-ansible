@@ -64,6 +64,7 @@
         name: gogs
       vars:
         project_name: "{{ project_cicd }}"
+        gogs_route: "gogs-{{ project_cicd }}.{{ apps_hostname_suffix }}"
 
     - import_role:
         name: jenkins
