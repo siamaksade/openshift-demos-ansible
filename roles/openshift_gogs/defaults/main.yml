@@ -3,8 +3,8 @@ gogs_image_version: 0.11.29
 
 gogs_route: gogs-{{ project_name }}.127.0.0.1.nip.io
 
-gogs_admin_user: team
-gogs_admin_password: team
+gogs_admin_user: gogs
+gogs_admin_password: gogs
 
 gogs_user: developer
 gogs_password: developer

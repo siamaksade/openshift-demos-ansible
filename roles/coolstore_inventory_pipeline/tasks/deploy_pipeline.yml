@@ -1,9 +1,0 @@
----
-# Deploy CoolStore Pipeline
-- name: create coolstore pipeline (simple)
-  shell: "{{ openshift_cli }} process -f {{ pipeline_template }} --param=DEV_PROJECT={{ project_test }} --param=TEST_PROJECT={{ project_stage }} --param=PROD_PROJECT={{ project_prod }} --param=GENERIC_WEBHOOK_SECRET=secret -n {{ project_cicd }} | {{ openshift_cli }} create -f - -n {{ project_cicd }}"
-  when: not simple_pipeline
-
-- name: create coolstore pipeline
-  shell: "{{ openshift_cli }} process -f {{ simple_pipeline_template }} --param=DEV_PROJECT={{ project_test }} --param=PROD_PROJECT={{ project_prod }} --param=GENERIC_WEBHOOK_SECRET=secret -n {{ project_cicd }} | {{ openshift_cli }} create -f - -n {{ project_cicd }}"
-  when: simple_pipeline

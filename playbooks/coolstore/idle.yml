@@ -4,32 +4,16 @@
   gather_facts: false
   run_once: true
   tasks:
-  - include_role:
-      name: idle_project
-    vars:
-      project_name: "{{ project_default }}"
+    - include_role:
+        name: common
 
-  - include_role:
-      name: idle_project
-    vars:
-      project_name: "{{ project_cicd }}"
-
-  - include_role:
-      name: idle_project
-    vars:
-      project_name: "{{ project_prod }}"
-
-  - include_role:
-      name: idle_project
-    vars:
-      project_name: "{{ project_stage }}"
-
-  - include_role:
-      name: idle_project
-    vars:
-      project_name: "{{ project_test }}"
-
-  - include_role:
-      name: idle_project
-    vars:
-      project_name: "{{ project_dev }}"
+    - name: idling projects
+      shell: "{{ openshift_cli }} idle -n {{ item }} --all"
+      ignore_errors: true
+      with_items:
+        - "{{ project_default }}"
+        - "{{ project_cicd }}"
+        - "{{ project_prod }}"
+        - "{{ project_stage }}"
+        - "{{ project_test }}"
+        - "{{ project_dev }}"

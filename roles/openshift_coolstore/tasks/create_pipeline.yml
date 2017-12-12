@@ -1,8 +1,10 @@
 ---
-# Configure Gogs Repos and Users
+## create pipelne
+
+# configure gogs
 - name: check if coolstore-microservice git repository exists
   uri:
-    url: http://{{ gogs_route }}/api/v1/repos/{{ gogs_admin_user }}/coolstore-microservice
+    url: http://{{ gogs_hostname }}/api/v1/repos/{{ gogs_admin_user }}/coolstore-microservice
     user: "{{ gogs_admin_user }}"
     password: "{{ gogs_admin_password }}"
     force_basic_auth: true
@@ -11,7 +13,7 @@
 
 - name: create coolstore-microservice git repository
   uri:
-    url: http://{{ gogs_route }}/api/v1/user/repos
+    url: http://{{ gogs_hostname }}/api/v1/user/repos
     method: POST
     body: '{"name": "coolstore-microservice", "private": false}'
     body_format: json
@@ -46,19 +48,19 @@
     mv {{ git_dir.path }}/coolstore-microservice-{{ github_ref }}/* {{ git_dir.path }}
     rm -rf {{ git_dir.path }}/coolstore-microservice-{{ github_ref }}
     git init
-    git remote add origin http://{{ gogs_route }}/{{ gogs_admin_user }}/coolstore-microservice.git
+    git remote add origin http://{{ gogs_hostname }}/{{ gogs_admin_user }}/coolstore-microservice.git
     git add . --all
     git config user.email "rhdeveloper@redhat.com"
     git config user.name "rh-developer"
     git commit -m "Initial add"
-    git push -f http://{{ gogs_admin_user }}:{{ gogs_admin_password }}@{{ gogs_route }}/{{ gogs_admin_user }}/coolstore-microservice.git master
+    git push -f http://{{ gogs_admin_user }}:{{ gogs_admin_password }}@{{ gogs_hostname }}/{{ gogs_admin_user }}/coolstore-microservice.git master
   args:
     chdir: "{{ git_dir.path }}"
   when: repo_result.status != 200
 
 - name: create pipeline webhook
   uri:
-    url: http://{{ gogs_route }}/api/v1/repos/{{ gogs_admin_user }}/coolstore-microservice/hooks
+    url: http://{{ gogs_hostname }}/api/v1/repos/{{ gogs_admin_user }}/coolstore-microservice/hooks
     method: POST
     body: >
       {
@@ -77,3 +79,18 @@
     password: "{{ gogs_admin_password }}"
     status_code: 200,201
     force_basic_auth: true
+
+
+# pipeline buildconfig
+- name: check if coolstore pipeline is deployed
+  shell: "{{ openshift_cli }} get bc inventory-pipeline -n {{ project_cicd }}"
+  register: pipeline_deployed_result
+  ignore_errors: true
+
+- name: create coolstore pipeline
+  shell: "{{ openshift_cli }} process -f {{ pipeline_template }} --param=DEV_PROJECT={{ project_test }} --param=TEST_PROJECT={{ project_stage }} --param=PROD_PROJECT={{ project_prod }} --param=GENERIC_WEBHOOK_SECRET=secret -n {{ project_cicd }} | {{ openshift_cli }} create -f - -n {{ project_cicd }}"
+  when: pipeline_deployed_result|failed and not disable_stage_project
+
+- name: create coolstore simple pipeline 
+  shell: "{{ openshift_cli }} process -f {{ simple_pipeline_template }} --param=DEV_PROJECT={{ project_test }} --param=PROD_PROJECT={{ project_prod }} --param=GENERIC_WEBHOOK_SECRET=secret -n {{ project_cicd }} | {{ openshift_cli }} create -f - -n {{ project_cicd }}"
+  when: pipeline_deployed_result|failed and disable_stage_project

@@ -1,5 +1,5 @@
 ---
-## Build or Import CoolStore Container Images
+## build coolstore images
 - name: check if pre-built image project exists 
   shell: "{{ openshift_cli }} get project {{ prebuilt_images_project_name }}"
   register: result
@@ -12,8 +12,11 @@
 
 - name: import pre-built images
   shell: "{{ openshift_cli }} tag {{ prebuilt_images_project_name }}/{{ item.metadata.name }}:latest {{ project_name }}/{{ item.metadata.name }}:latest"
-  with_items: "{{ prebuilt_is_list.stdout|from_json|json_query('items') }}"
-  when: item|json_query("status.tags[?tag=='latest']")|trim() != '[]'
+  with_items: "{{ prebuilt_is_list.stdout|default('[]')|from_json|json_query('items') }}"
+  when: >
+     result|success and 
+     item|json_query("status.tags[?tag=='latest']") is not none and
+     item|json_query("status.tags[?tag=='latest']")|trim() != '[]'
 
 - name: create build configs in {{ project_name }}
   shell: >
@@ -25,12 +28,12 @@
   ignore_errors: true
 
 - name: prune buildconfigs in {{ project_name }}
-  shell: "{{ openshift_cli }} delete bc,is -l {{ prune_by_selector }} -n {{ project_name }}"
+  shell: "{{ openshift_cli }} delete bc,is -l {{ prune_builds_selector }} -n {{ project_name }}"
   ignore_errors: true
   when: >
-    prune_by_selector is defined and 
-    prune_by_selector is not none and 
-    prune_by_selector|trim() != ""
+    prune_builds_selector is defined and 
+    prune_builds_selector is not none and 
+    prune_builds_selector|trim() != ""
 
 - name: list build configs
   shell: "{{ openshift_cli }} get bc -l demo=coolstore-microservice -o jsonpath='{.items[*].metadata.name}' -n {{ project_name }}"
@@ -45,7 +48,9 @@
   with_items: "{{ is_list.stdout|from_json|json_query('items') }}"
   when: >
     item.metadata.name in builds_list.stdout.split() and 
-    item|json_query("status.tags[?tag=='latest']")|trim() == '[]'
+    (item|json_query("status.tags[?tag=='latest']") is none or
+      item|json_query("status.tags[?tag=='latest']")|trim() == '[]' or
+      item|json_query("status.tags[?tag=='latest']")|trim() == '')
   register: build_result
   until: build_result|success
   retries: 5

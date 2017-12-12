@@ -1,6 +1,0 @@
----
-from_project: "{{ project_prod }}"
-to_project: "{{ project_prod }}"
-
-tag: prod
-

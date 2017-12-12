@@ -70,7 +70,7 @@
     oc_token is none or
     oc_token|trim() == ""
 
-- name: check if token file exists
+- name: set token facts
   set_fact:
     oc_token: "{{ lookup('file', '/var/run/secrets/kubernetes.io/serviceaccount/token') }}"
     running_on_openshift: true
@@ -90,4 +90,4 @@
 
 # set hostname suffix
 - import_tasks: hostname_suffix.yml
-  when: set_hostname_suffi
+  when: set_hostname_suffix

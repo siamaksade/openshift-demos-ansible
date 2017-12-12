@@ -1,0 +1,41 @@
+---
+## create cooltore projects for ci/cd
+
+- name: create coolstore projects (ci/cd)
+  shell: |
+    {{ openshift_cli }} new-project {{ item.value.name }} --display-name='{{ item.value.display }}' --description='{{ item.value.desc }}'
+    {{ openshift_cli }} adm policy add-role-to-group admin system:serviceaccounts:{{ item.value.name }} -n {{ item.value.name }}
+    {{ openshift_cli }} adm policy add-role-to-group admin system:serviceaccounts:{{ project_join_with }} -n {{ item.value.name }}
+    {{ openshift_cli }} adm pod-network join-projects --to={{ project_join_with }} {{ item.value.name }}
+    {{ openshift_cli }} oc annotate --overwrite namespace {{ item.value.name }} {{ project_annotations }}
+  ignore_errors: true
+  with_dict:
+    prod:
+      name: "{{ project_prod }}"
+      display: "{{ project_prod_name }}"
+      desc: "{{ project_prod_desc }}"
+    stage:
+      name: "{{ project_stage }}"
+      display: "{{ project_stage_name }}"
+      desc: "{{ project_stage_desc }}"
+    test:
+      name: "{{ project_test }}"
+      display: "{{ project_test_name }}"
+      desc: "{{ project_test_desc }}"
+    dev:
+      name: "{{ project_dev }}"
+      display: "{{ project_dev_name }}"
+      desc: "{{ project_dev_desc }}"
+      
+- name: assign user {{ project_admin }} as project admin
+  shell: "oc adm policy add-role-to-user admin {{ project_admin }} -n {{ item }}"
+  ignore_errors: true
+  with_items: 
+    - "{{ project_prod }}"
+    - "{{ project_stage }}"
+    - "{{ project_test }}"
+    - "{{ project_dev }}"
+  when: >
+    project_admin is defined and
+    project_admin is not none and
+    project_admin|trim() != ""

@@ -1,0 +1,27 @@
+---
+# Promote CoolStore Images
+- name: list image streams
+  shell: "{{ openshift_cli }} get is -o json -n {{ from_project }}"
+  register: is_list
+
+- name: tag images in {{ project_prod }}
+  shell: "{{ openshift_cli }} tag {{ from_project }}/{{ item.metadata.name }}:latest {{ project_prod }}/{{ item.metadata.name }}:prod"
+  with_items: "{{ is_list.stdout|from_json|json_query('items') }}"
+  when: >
+    item|json_query("status.tags[?tag=='latest']") is not none and
+    item|json_query("status.tags[?tag=='latest']")|trim() != '[]'
+
+- name: tag images in {{ project_stage }}
+  shell: "{{ openshift_cli }} tag {{ from_project }}/{{ item.metadata.name }}:latest {{ project_stage }}/{{ item.metadata.name }}:test"
+  with_items: "{{ is_list.stdout|from_json|json_query('items') }}"
+  when: >
+    item|json_query("status.tags[?tag=='latest']") is not none and
+    item|json_query("status.tags[?tag=='latest']")|trim() != '[]'
+
+- name: tag inventory blue/green images in {{ project_prod }}
+  shell: "{{ openshift_cli }} tag {{ from_project }}/{{ bluegreen_image }}:latest {{ project_prod }}/{{ bluegreen_image }}:prod-{{ item }}"
+  with_items: [ "green", "blue"]
+  when: >
+    bluegreen_image is defined and 
+    bluegreen_image is not none and 
+    bluegreen_image|trim() != ""

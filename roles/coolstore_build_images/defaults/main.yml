@@ -1,8 +1,0 @@
----
-builds_template: https://raw.githubusercontent.com/{{ github_account }}/coolstore-microservice/{{ github_ref }}/openshift/templates/coolstore-builds-template.yaml
-coolstore_github_repo: https://github.com/{{github_account}}/coolstore-microservice.git
-
-keep_build_configs: true
-
-# delete dc using this selector to scale the environment down
-# prune_by_selector:
