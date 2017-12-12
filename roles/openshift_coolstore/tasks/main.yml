@@ -14,6 +14,7 @@
   shell: "{{ openshift_cli }} get dc web-ui -n {{ project_default }}"
   register: default_deployed_result
   ignore_errors: true
+  changed_when: false
 
 - import_tasks: deploy_default.yml
   when: not enable_cicd and default_deployed_result|failed
@@ -36,6 +37,7 @@
   shell: "{{ openshift_cli }} get dc web-ui -n {{ project_prod }}"
   register: prod_deployed_result
   ignore_errors: true
+  changed_when: false
 
 - import_tasks: deploy_prod.yml
   when: enable_cicd and prod_deployed_result|failed
@@ -45,6 +47,7 @@
   register: stage_deployed_result
   ignore_errors: true
   when: enable_cicd
+  changed_when: false
 
 - import_tasks: deploy_stage.yml
   when: not disable_stage_project and stage_deployed_result|failed

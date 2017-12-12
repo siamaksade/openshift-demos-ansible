@@ -16,6 +16,7 @@
     shell: "{{ openshift_cli }} get project {{ project_name }}"
     register: result
     ignore_errors: true
+    changed_when: false
 
   - name: create project {{ project_name }}
     shell: "{{ openshift_cli }} new-project {{ project_name }} --description='DO NOT REMOVE THIS PROJECT. NEEDED FOR COOLSTORE DEMO'"
@@ -25,6 +26,7 @@
     shell: "{{ openshift_cli }} get project -n {{ project_name }}"
     register: result
     ignore_errors: true
+    changed_when: false
 
   - name: create image builder project {{ project_name }}
     shell: "{{ openshift_cli }} new-project {{ project_name }} --description='{{ project_desc }}'"

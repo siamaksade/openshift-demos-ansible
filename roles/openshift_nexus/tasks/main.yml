@@ -6,6 +6,7 @@
   shell: "{{ openshift_cli }} get project {{ project_name }}"
   register: nexus_project_result
   ignore_errors: true
+  changed_when: false
 
 - name: create gogs project {{ project_name }}
   shell: "{{ openshift_cli }} new-project {{ project_name }} --display-name='{{ project_display_name }}' --description='{{ project_desc }}'"
@@ -34,6 +35,7 @@
   shell: "{{ openshift_cli }} get service nexus -n {{ project_name }}"
   register: nexus_result
   ignore_errors: true
+  changed_when: false
 
 - name: deploy nexus template (persistent)
   shell: |
@@ -55,6 +57,7 @@
 - name: get nexus route
   shell: "{{ openshift_cli }} get route nexus -n {{ project_name }}"
   register: nexus_result
+  changed_when: false
 
 - name: wait for nexus to be running
   uri:

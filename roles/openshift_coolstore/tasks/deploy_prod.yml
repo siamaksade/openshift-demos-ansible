@@ -16,34 +16,14 @@
 - name: prune deployments in {{ project_prod }}
   shell: "{{ openshift_cli }} delete dc,svc,route,pvc,cm -l {{ prune_deployments_selector_prod }} -n {{ project_prod }}"
   ignore_errors: true
-  when: >
-    prune_deployments_selector_prod is defined and 
-    prune_deployments_selector_prod is not none and 
-    prune_deployments_selector_prod|trim() != ""
+  when:
+  - prune_deployments_selector_stage is defined
+  - prune_deployments_selector_stage is not none
+  - prune_deployments_selector_stage|trim() != ""
 
-# remove persistent storage in prod
-- name: list deployment configs in {{ project_prod }}
-  shell: "{{ openshift_cli }} get dc -o json -n {{ project_prod }}"
-  register: deploymentconfigs_list
-
-- name: delete pvc and dc volumes in {{ project_prod }}
-  shell: |
-    {{ openshift_cli }} volumes dc/{{ item.0.metadata.name }} --name={{ item.1.name }} --add -t emptyDir --overwrite -n {{ project_prod }}
-    {{ openshift_cli }} delete pvc {{ item.1.persistentVolumeClaim.claimName }} -n {{ project_prod }}
-  with_subelements: 
-    - "{{ deploymentconfigs_list.stdout|from_json|json_query('items[?spec.template.spec.volumes]') }}"
-    - spec.template.spec.volumes
-  when: >
-    ephemeral and 
-    item.1.persistentVolumeClaim is defined and 
-    item.1.persistentVolumeClaim is not none and 
-    item.1.persistentVolumeClaim|trim() != ""
-
-- name: list deployment configs that use database in {{ project_prod }}
-  shell: "{{ openshift_cli }} get dc -l uses-database=true -o json -n {{ project_prod }}"
-  register: deploymentconfigs_with_database_list
-
-- name: restart deployments that use database to re-init databases in {{ project_prod }}
-  shell: "{{ openshift_cli }} rollout latest dc/{{ item.metadata.name }} -n {{ project_prod }}"
-  with_items: "{{ deploymentconfigs_with_database_list.stdout|from_json|json_query('items') }}"
+# remove persistent storage
+- import_tasks: make_ephemeral.yml
+  vars:
+    project_name: "{{ project_prod }}"
   when: ephemeral
+

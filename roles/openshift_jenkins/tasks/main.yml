@@ -6,6 +6,7 @@
   shell: "{{ openshift_cli }} get project {{ project_name }}"
   register: jenkins_project_result
   ignore_errors: true
+  changed_when: false
 
 - name: create jenkins project {{ project_name }}
   shell: "{{ openshift_cli }} new-project {{ project_name }} --display-name='{{ project_display_name }}' --description='{{ project_desc }}'"
@@ -34,6 +35,7 @@
   shell: "{{ openshift_cli }} get service jenkins -n {{ project_name }}"
   register: install_jenkins
   ignore_errors: true
+  changed_when: false
 
 - name: deploy jenkins persistent from template
   shell: "{{ openshift_cli }} new-app jenkins-persistent -l app=jenkins -p MEMORY_LIMIT=1Gi -n {{ project_name }}"

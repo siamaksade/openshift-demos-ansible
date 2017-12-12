@@ -1,7 +1,7 @@
 ---
 # deploy default
 - name: deploy coolstore in {{ project_default }}
-  shell: "{{ openshift_cli }} process -f {{ deployments_template }} --param=APP_VERSION=prod --param=HOSTNAME_SUFFIX={{ project_default }}.{{ hostname_suffix }} -n {{ project_default }} | {{ openshift_cli }} create -f - -n {{ project_default }}"
+  shell: "{{ openshift_cli }} process -f {{ deployments_template }} --param=APP_VERSION=latest --param=HOSTNAME_SUFFIX={{ project_default }}.{{ hostname_suffix }} -n {{ project_default }} | {{ openshift_cli }} create -f - -n {{ project_default }}"
   ignore_errors: true
 
 - name: deploy netflix oss in {{ project_default }}
@@ -11,36 +11,13 @@
 - name: prune deployments in {{ project_default }}
   shell: "{{ openshift_cli }} delete dc,svc,route,pvc,cm -l {{ prune_deployments_selector }} -n {{ project_default }}"
   ignore_errors: true
-  when: >
-    prune_deployments_selector is defined and 
-    prune_deployments_selector is not none and 
-    prune_deployments_selector|trim() != ""
+  when:
+  - prune_deployments_selector is defined
+  - prune_deployments_selector is not none
+  - prune_deployments_selector|trim() != ""
 
-# remove persistent storage in default
-- name: list deployment configs in {{ project_default }}
-  shell: "{{ openshift_cli }} get dc -o json -n {{ project_default }}"
-  register: deploymentconfigs_list
-  when: ephemeral
-
-- name: delete pvc and dc volumes in {{ project_default }}
-  shell: |
-    {{ openshift_cli }} volumes dc/{{ item.0.metadata.name }} --name={{ item.1.name }} --add -t emptyDir --overwrite -n {{ project_default }}
-    {{ openshift_cli }} delete pvc {{ item.1.persistentVolumeClaim.claimName }} -n {{ project_default }}
-  with_subelements: 
-    - "{{ deploymentconfigs_list.stdout|default('[]')|from_json|json_query('items[?spec.template.spec.volumes]') }}"
-    - spec.template.spec.volumes
-  when: >
-    ephemeral and 
-    item.1.persistentVolumeClaim is defined and 
-    item.1.persistentVolumeClaim is not none and 
-    item.1.persistentVolumeClaim|trim() != ""
-
-- name: list deployment configs that use database in {{ project_default }}
-  shell: "{{ openshift_cli }} get dc -l uses-database=true -o json -n {{ project_default }}"
-  register: deploymentconfigs_with_database_list
-  when: ephemeral
-
-- name: restart deployments that use database to re-init databases in {{ project_default }}
-  shell: "{{ openshift_cli }} rollout latest dc/{{ item.metadata.name }} -n {{ project_default }}"
-  with_items: "{{ deploymentconfigs_with_database_list.stdout|default('[]')|from_json|json_query('items') }}"
+# remove persistent storage
+- import_tasks: make_ephemeral.yml
+  vars:
+    project_name: "{{ project_default }}"
   when: ephemeral

@@ -6,6 +6,7 @@
   shell: "{{ openshift_cli }} get project {{ project_name }}"
   register: gogs_project_result
   ignore_errors: true
+  changed_when: false
 
 - name: create gogs project {{ project_name }}
   shell: "{{ openshift_cli }} new-project {{ project_name }} --display-name='{{ project_display_name }}' --description='{{ project_desc }}'"
@@ -34,6 +35,7 @@
   shell: "{{ openshift_cli }} get service gogs -n {{ project_name }}"
   register: install_gogs
   ignore_errors: true
+  changed_when: false
 
 - import_tasks: deploy.yml
   when: install_gogs | failed

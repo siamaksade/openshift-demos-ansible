@@ -12,11 +12,13 @@
     shell: "{{ openshift_cli }} get project {{ project_default }}"
     register: result
     ignore_errors: true
+    changed_when: false
 
   - name: list deployment configs in {{ project_default }}
     shell: "{{ openshift_cli }} get dc -o json -n {{ project_default }}"
     register: deploymentconfigs_list
     when: result|success
+    changed_when: false
 
   - name: unidle all deployments in project {{ project_default }}"
     shell: "{{ openshift_cli }} scale --replicas={{ item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] }} dc {{ item.metadata.name }} -n {{ project_default }}"
@@ -33,11 +35,13 @@
     shell: "{{ openshift_cli }} get project {{ project_cicd }}"
     register: result
     ignore_errors: true
+    changed_when: false
 
   - name: list deployment configs in {{ project_cicd }}
     shell: "{{ openshift_cli }} get dc -o json -n {{ project_cicd }}"
     register: deploymentconfigs_list
     when: result|success
+    changed_when: false
 
   - name: unidle all deployments in project {{ project_cicd }}"
     shell: "{{ openshift_cli }} scale --replicas={{ item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] }} dc {{ item.metadata.name }} -n {{ project_cicd }}"
@@ -54,11 +58,13 @@
     shell: "{{ openshift_cli }} get project {{ project_prod }}"
     register: result
     ignore_errors: true
+    changed_when: false
 
   - name: list deployment configs in {{ project_prod }}
     shell: "{{ openshift_cli }} get dc -o json -n {{ project_prod }}"
     register: deploymentconfigs_list
     when: result|success
+    changed_when: false
 
   - name: unidle all deployments in project {{ project_prod }}"
     shell: "{{ openshift_cli }} scale --replicas={{ item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] }} dc {{ item.metadata.name }} -n {{ project_prod }}"
@@ -75,11 +81,13 @@
     shell: "{{ openshift_cli }} get project {{ project_stage }}"
     register: result
     ignore_errors: true
+    changed_when: false
 
   - name: list deployment configs in {{ project_stage }}
     shell: "{{ openshift_cli }} get dc -o json -n {{ project_stage }}"
     register: deploymentconfigs_list
     when: result|success
+    changed_when: false
 
   - name: unidle all deployments in project {{ project_stage }}"
     shell: "{{ openshift_cli }} scale --replicas={{ item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] }} dc {{ item.metadata.name }} -n {{ project_stage }}"
@@ -96,11 +104,13 @@
     shell: "{{ openshift_cli }} get project {{ project_test }}"
     register: result
     ignore_errors: true
+    changed_when: false
 
   - name: list deployment configs in {{ project_test }}
     shell: "{{ openshift_cli }} get dc -o json -n {{ project_test }}"
     register: deploymentconfigs_list
     when: result|success
+    changed_when: false
 
   - name: unidle all deployments in project {{ project_test }}"
     shell: "{{ openshift_cli }} scale --replicas={{ item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] }} dc {{ item.metadata.name }} -n {{ project_test }}"
@@ -117,11 +127,13 @@
     shell: "{{ openshift_cli }} get project {{ project_dev }}"
     register: result
     ignore_errors: true
+    changed_when: false
 
   - name: list deployment configs in {{ project_dev }}
     shell: "{{ openshift_cli }} get dc -o json -n {{ project_dev }}"
     register: deploymentconfigs_list
     when: result|success
+    changed_when: false
 
   - name: unidle all deployments in project {{ project_dev }}"
     shell: "{{ openshift_cli }} scale --replicas={{ item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] }} dc {{ item.metadata.name }} -n {{ project_dev }}"

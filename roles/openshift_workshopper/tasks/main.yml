@@ -6,6 +6,7 @@
   shell: "{{ openshift_cli }} get project {{ project_name }}"
   register: workshopper_project_result
   ignore_errors: true
+  changed_when: false
 
 - name: create workshopper project {{ project_name }}
   shell: "{{ openshift_cli }} new-project {{ project_name }} --display-name='{{ project_display_name }}' --description='{{ project_desc }}'"
@@ -34,6 +35,7 @@
   shell: "{{ openshift_cli }} get service guides -n {{ project_name }}"
   register: guides_exist_result
   ignore_errors: true
+  changed_when: false
 
 - import_tasks: deploy.yml
   when: guides_exist_result|failed

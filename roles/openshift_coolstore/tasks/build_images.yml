@@ -4,11 +4,13 @@
   shell: "{{ openshift_cli }} get project {{ prebuilt_images_project_name }}"
   register: result
   ignore_errors: true
+  changed_when: false
 
 - name: list pre-built images
   shell: "{{ openshift_cli }} get is -o json -n {{ prebuilt_images_project_name }}"
   register: prebuilt_is_list
   when: result|success
+  changed_when: false
 
 - name: import pre-built images
   shell: "{{ openshift_cli }} tag {{ prebuilt_images_project_name }}/{{ item.metadata.name }}:latest {{ project_name }}/{{ item.metadata.name }}:latest"
@@ -38,19 +40,21 @@
 - name: list build configs
   shell: "{{ openshift_cli }} get bc -l demo=coolstore-microservice -o jsonpath='{.items[*].metadata.name}' -n {{ project_name }}"
   register: builds_list
+  changed_when: false
 
 - name: list image streams
   shell: "{{ openshift_cli }} get is -o json -n {{ project_name }}"
   register: is_list
+  changed_when: false
 
 - name: build images
   shell: "{{ openshift_cli }} start-build {{ item.metadata.name }} -n {{ project_name }} --wait"
-  with_items: "{{ is_list.stdout|from_json|json_query('items') }}"
-  when: >
-    item.metadata.name in builds_list.stdout.split() and 
-    (item|json_query("status.tags[?tag=='latest']") is none or
-      item|json_query("status.tags[?tag=='latest']")|trim() == '[]' or
-      item|json_query("status.tags[?tag=='latest']")|trim() == '')
+  with_items: "{{ is_list.stdout|default('[]')|from_json|json_query('items') }}"
+  when:
+    - item.metadata.name in builds_list.stdout.split()
+    - (item|json_query("status.tags[?tag=='latest']") is none) or 
+      (item|json_query("status.tags[?tag=='latest']")|trim() == '[]') or 
+      (item|json_query("status.tags[?tag=='latest']")|trim() == '')
   register: build_result
   until: build_result|success
   retries: 5

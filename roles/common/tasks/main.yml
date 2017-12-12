@@ -9,6 +9,7 @@
     openshift_master is not defined or
     openshift_master is none or
     openshift_master|trim() == ""
+  changed_when: false
 
 - name: set openshift master fact
   set_fact:
@@ -26,6 +27,7 @@
     project_admin is not defined or
     project_admin is none or
     project_admin|trim() == ""
+  changed_when: false
 
 - name: set openshift user fact
   set_fact:

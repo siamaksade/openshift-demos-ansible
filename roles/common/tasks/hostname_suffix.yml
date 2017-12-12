@@ -15,6 +15,7 @@
 - name: get dummy route to calculate hostnames
   shell: "{{ openshift_cli }} get route dummy -o=go-template --template={%raw%}'{{ .spec.host }}'{%endraw%} -n {{ tmp_project_name }}"
   register: dummy_route_result
+  changed_when: false
 
 - name: set routes hostname fact
   set_fact:
