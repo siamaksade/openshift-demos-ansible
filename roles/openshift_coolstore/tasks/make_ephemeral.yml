@@ -1,0 +1,27 @@
+---
+# remove persistent storage
+- name: list deployment configs in {{ project_name }}
+  shell: "{{ openshift_cli }} get dc -o json -n {{ project_name }}"
+  register: deploymentconfigs_list
+  changed_when: false
+
+- name: delete pvc and dc volumes in {{ project_name }}
+  shell: |
+    {{ openshift_cli }} volumes dc/{{ item.0.metadata.name }} --name={{ item.1.name }} --add -t emptyDir --overwrite -n {{ project_name }}
+    {{ openshift_cli }} delete pvc {{ item.1.persistentVolumeClaim.claimName }} -n {{ project_name }}
+  with_subelements: 
+    - "{{ deploymentconfigs_list.stdout|default('[]')|from_json|json_query('items[?spec.template.spec.volumes]') }}"
+    - "{{ spec.template.spec.volumes|default('[]') }}"
+  when:
+  - item.1.persistentVolumeClaim is defined
+  - item.1.persistentVolumeClaim is not none
+  - item.1.persistentVolumeClaim|trim() != ""
+
+- name: list deployment configs that use database in {{ project_name }}
+  shell: "{{ openshift_cli }} get dc -l uses-database=true -o json -n {{ project_name }}"
+  register: deploymentconfigs_with_database_list
+  changed_when: false
+
+- name: restart deployments that use database to re-init databases in {{ project_name }}
+  shell: "{{ openshift_cli }} rollout latest dc/{{ item.metadata.name }} -n {{ project_name }}"
+  with_items: "{{ deploymentconfigs_with_database_list.stdout|default('[]')|from_json|json_query('items') }}"
