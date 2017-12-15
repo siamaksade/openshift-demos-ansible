@@ -1,0 +1,17 @@
+---
+## deploy coolstore
+
+- import_tasks: create_default_project.yml
+
+- import_tasks: build_images.yml
+  vars:
+    project_name: "{{ project_default }}"
+
+- name: check if coolstore is deployed in {{ project_default }}
+  shell: "{{ openshift_cli }} get dc web-ui -n {{ project_default }}"
+  register: default_deployed_result
+  ignore_errors: true
+  changed_when: false
+
+- import_tasks: deploy_default.yml
+  when: default_deployed_result|failed

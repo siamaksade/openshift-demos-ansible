@@ -1,0 +1,34 @@
+---
+## deploy coolstore with ci/cd
+
+- import_tasks: create_cicd_projects.yml
+
+- import_tasks: build_images.yml
+  vars:
+    project_name: "{{ project_prod }}"
+
+- import_tasks: promote_images.yml
+  vars:
+    from_project: "{{ project_prod }}"
+
+- name: check if coolstore is deployed in {{ project_prod }}
+  shell: "{{ openshift_cli }} get dc web-ui -n {{ project_prod }}"
+  register: prod_deployed_result
+  ignore_errors: true
+  changed_when: false
+
+- import_tasks: deploy_prod.yml
+  when: prod_deployed_result|failed
+
+- name: check if coolstore is deployed in {{ project_stage }}
+  shell: "{{ openshift_cli }} get dc web-ui -n {{ project_stage }}"
+  register: stage_deployed_result
+  ignore_errors: true
+  changed_when: false
+
+- import_tasks: deploy_stage.yml
+  when: not disable_stage_project and stage_deployed_result|failed
+
+- import_tasks: deploy_devtest.yml
+
+- import_tasks: create_pipeline.yml
