@@ -39,7 +39,6 @@ on any OpenShift environment:
 $ oc new-project demo-installer
 $ oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:demo-installer:default
 $ oc process -f helpers/coolstore-ansible-installer.yaml --param=COOLSTORE_DEMO_NAME=msa-cicd-eap-min | oc create -f - -n demo-installer
-$ oc delete project demo-installer
 ```
 
 ### Variables
