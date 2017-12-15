@@ -30,7 +30,7 @@
   ignore_errors: true
 
 - name: prune buildconfigs in {{ project_name }}
-  shell: "{{ openshift_cli }} delete bc,is -l {{ prune_builds_selector }} -n {{ project_name }}"
+  shell: "{{ openshift_cli }} delete bc -l {{ prune_builds_selector }} -n {{ project_name }}"
   ignore_errors: true
   when: >
     prune_builds_selector is defined and 
