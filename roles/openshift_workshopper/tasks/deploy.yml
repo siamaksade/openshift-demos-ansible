@@ -10,7 +10,7 @@
 
 - name: configure workshopper guide env vars
   shell: "{{ openshift_cli }} set env dc/guides {{ item.key }}={{ item.value }} -n {{ project_name }}"
-  with_dict: {{ workshopper_env_vars }}
+  with_dict: "{{ workshopper_env_vars }}"
 
 - name: set demo guide probes
   shell: "{{ openshift_cli }} set probe dc/guides -n {{ project_name }} --readiness --liveness --get-url=http://:8080/ --failure-threshold=5 --initial-delay-seconds=30"

@@ -2,6 +2,8 @@
 ## deploy coolstore with ci/cd
 
 - import_tasks: create_cicd_projects.yml
+  vars:
+    project_join_with: "{{ project_cicd }}"
 
 - import_tasks: build_images.yml
   vars:

@@ -38,7 +38,7 @@ project_default_desc: "CoolStore MSA"
 
 # project configs
 project_annotations: demo=demo-modern-arch
-projects_join_with: cicd
+project_join_with: cicd
 disable_stage_project: false
 
 # openshift

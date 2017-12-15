@@ -55,13 +55,13 @@
   when: nexus_result|failed and ephemeral
 
 - name: get nexus route
-  shell: "{{ openshift_cli }} get route nexus -n {{ project_name }}"
+  shell: "{{ openshift_cli }} get route nexus -o json -n {{ project_name }}"
   register: nexus_result
   changed_when: false
 
 - name: wait for nexus to be running
   uri:
-    url: http://{{ nexus_result.stdout|from_json|json_query('.spec.host') }}
+    url: http://{{ nexus_result.stdout|from_json|json_query('spec.host') }}
     status_code: 200
   register: result
   until: result.status == 200

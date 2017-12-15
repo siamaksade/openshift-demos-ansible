@@ -3,19 +3,19 @@
 - name: deploy gogs from template
   shell: |
     {{ openshift_cli }} new-app -f https://raw.githubusercontent.com/OpenShiftDemos/gogs-openshift-docker/master/openshift/gogs-persistent-template.yaml \
-    --param=HOSTNAME={{ gogs_route }} \
-    --param=GOGS_VERSION={{ gogs_image_version }} \
-    --param=SKIP_TLS_VERIFY=true \
-    -n {{ project_name }}
+        --param=HOSTNAME={{ gogs_route }} \
+        --param=GOGS_VERSION={{ gogs_image_version }} \
+        --param=SKIP_TLS_VERIFY=true \
+        -n {{ project_name }}
   when: not ephemeral
 
 - name: deploy gogs from template
   shell: |
     {{ openshift_cli }} new-app -f https://raw.githubusercontent.com/OpenShiftDemos/gogs-openshift-docker/master/openshift/gogs-template.yaml \
-    --param=HOSTNAME={{ gogs_route }} \
-    --param=GOGS_VERSION={{ gogs_image_version }} \
-    --param=SKIP_TLS_VERIFY=true \
-    -n {{ project_name }}"
+        --param=HOSTNAME={{ gogs_route }} \
+        --param=GOGS_VERSION={{ gogs_image_version }} \
+        --param=SKIP_TLS_VERIFY=true \
+        -n {{ project_name }}
   when: ephemeral
 
 - name: wait for gogs postgresql to be running
