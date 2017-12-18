@@ -13,6 +13,15 @@
   vars:
     from_project: "{{ project_prod }}"
 
+- name: check if pipeline is deployed
+  shell: "{{ openshift_cli }} get bc inventory-pipeline -n {{ project_cicd }}"
+  register: pipeline_deployed_result
+  ignore_errors: true
+  changed_when: false
+
+- import_tasks: create_pipeline.yml
+  when: pipeline_deployed_result|failed
+
 - name: check if coolstore is deployed in {{ project_prod }}
   shell: "{{ openshift_cli }} get dc web-ui -n {{ project_prod }}"
   register: prod_deployed_result
@@ -32,5 +41,3 @@
   when: not disable_stage_project and stage_deployed_result|failed
 
 - import_tasks: deploy_devtest.yml
-
-- import_tasks: create_pipeline.yml
