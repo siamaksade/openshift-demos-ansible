@@ -9,6 +9,7 @@
     {{ openshift_cli }} adm pod-network join-projects --to={{ project_join_with }} {{ item.value.name }}
     {{ openshift_cli }} oc annotate --overwrite namespace {{ item.value.name }} {{ project_annotations }}
   ignore_errors: true
+  when: not disable_stage_project || item.value.name != project_stage
   with_dict:
     prod:
       name: "{{ project_prod }}"
@@ -35,7 +36,8 @@
     - "{{ project_stage }}"
     - "{{ project_test }}"
     - "{{ project_dev }}"
-  when: >
-    project_admin is defined and
-    project_admin is not none and
-    project_admin|trim() != ""
+  when:
+    - project_admin is defined
+    - project_admin is not none
+    - project_admin|trim() != ""
+    - (not disable_stage_project || item != project_stage)

@@ -36,9 +36,6 @@ project_default: coolstore
 project_default_name: "CoolStore MSA"
 project_default_desc: "CoolStore MSA"
 
-# delete extra projects
-prune_projects:
-
 # project configs
 project_annotations: demo=demo-modern-arch
 project_join_with: cicd

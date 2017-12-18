@@ -34,10 +34,3 @@
 - import_tasks: deploy_devtest.yml
 
 - import_tasks: create_pipeline.yml
-
-- name: prune projects
-  shell: "{{ openshift_cli }} delete project {{ prune_projects }}"
-  when: >
-    prune_projects is defined and 
-    prune_projects is not none and 
-    prune_projects|trim() != ""

@@ -6,7 +6,7 @@
   vars_files:
     - demo_vars/msa-cicd-eap/all
 
-  pre_tasks:
+  tasks:
     - include_role:
         name: common
 
@@ -28,7 +28,6 @@
         maven_mirror_url is none or
         maven_mirror_url|trim() == ""
 
-  tasks:
     - import_role:
         name: openshift_jenkins
       vars:
@@ -61,5 +60,4 @@
         gogs_hostname: "gogs-{{ project_cicd }}.{{ apps_hostname_suffix }}"
         prune_deployments_selector: "comp-required!=true,app!=inventory"
         prune_builds_selector: "comp-required!=true,app!=inventory"
-        prune_projects: "{{ project_stage }}"
         disable_stage_project: true
