@@ -19,29 +19,11 @@
     openshift_master is none or
     openshift_master|trim() == ""
 
-# set openshift user
-- name: get openshift user
-  shell: "oc whoami"
-  register: openshift_user_result
-  when: >
-    project_admin is not defined or
-    project_admin is none or
-    project_admin|trim() == ""
-  changed_when: false
-
-- name: set openshift user fact
-  set_fact:
-    openshift_user: "{{ openshift_user_result.stdout }}"
-  when: >
-    project_admin is not defined or
-    project_admin is none or
-    project_admin|trim() == ""
-
 # set cli options (.server)
 - name: set openshift cli options (server)
   set_fact:
     openshift_cli: "oc --server={{ openshift_master }} --insecure-skip-tls-verify=true"
-  
+
 # set cli options (.kube)
 - name: check if kube config dir exists
   stat:
@@ -89,6 +71,24 @@
     oc_token is defined and 
     oc_token is not none and 
     oc_token|trim() != ""
+
+# set openshift user
+- name: get openshift user
+  shell: "{{ openshift_cli }} whoami"
+  register: openshift_user_result
+  when: >
+    project_admin is not defined or
+    project_admin is none or
+    project_admin|trim() == ""
+  changed_when: false
+
+- name: set openshift user fact
+  set_fact:
+    openshift_user: "{{ openshift_user_result.stdout }}"
+  when: >
+    project_admin is not defined or
+    project_admin is none or
+    project_admin|trim() == ""
 
 # set hostname suffix
 - import_tasks: hostname_suffix.yml
