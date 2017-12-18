@@ -42,13 +42,13 @@ the Ansible playbooks. Check out the template for the complete list of paramters
 
 ### Playbooks
 
-| Playbook                                                      | Description                                                             | Memory     | CPU     | Projects |
-|---------------------------------------------------------------|-------------------------------------------------------------------------|------------|---------|----------|
-| [msa-min](playbooks/coolstore/msa-min.yml)                    | deploys CoolStore with min required services                            | 4 GB       | 1 cores | 1        |
-| [msa-full](playbooks/coolstore/msa-full.yml)                  | deploys CoolStore with all services                                     | 8 GB       | 2 cores | 1        |
-| [msa-cicd-eap-min](playbooks/coolstore/msa-cicd-eap-min.yml)  | deploys CoolStore with CI/CD and min required services (Dev-Prod)       | 8 GB       | 2 cores | 3        |
-| [msa-cicd-eap-full](playbooks/coolstore/msa-cicd-eap-full.yml)| deploys CoolStore with CI/CD and min required services (Dev-Test-Prod)  | 20 GB      | 8 cores | 5        |
-| [undeploy](playbooks/coolstore/undeploy.yml)                  | delete the demos                                                        | -          | -       | -        |
+| Playbook                                                      | Description                                                             | Memory     | CPU     |
+|---------------------------------------------------------------|-------------------------------------------------------------------------|------------|---------|
+| [msa-min](playbooks/coolstore/msa-min.yml)                    | Deploys CoolStore with min required services                            | 4 GB       | 1 cores |
+| [msa-full](playbooks/coolstore/msa-full.yml)                  | Deploys CoolStore with all services                                     | 8 GB       | 2 cores |
+| [msa-cicd-eap-min](playbooks/coolstore/msa-cicd-eap-min.yml)  | Deploys CoolStore with CI/CD and min services (Dev-Prod)                | 8 GB       | 2 cores |
+| [msa-cicd-eap-full](playbooks/coolstore/msa-cicd-eap-full.yml)| Deploys CoolStore with CI/CD and all services (Dev-Test-Prod)           | 20 GB      | 8 cores |
+| [undeploy](playbooks/coolstore/undeploy.yml)                  | Delete the demos                                                        | -          | -       |
 
 
 ### Variables
