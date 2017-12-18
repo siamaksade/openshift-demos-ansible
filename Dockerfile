@@ -10,7 +10,7 @@ ADD playbooks /demos/playbooks
 ADD roles /demos/roles
 ADD ansible.cfg /demos
 
-RUN yum -y install nss_wrapper && \
+RUN yum -y install nss_wrapper unzip && \
     yum clean all && \
     localedef -f UTF-8 -i en_US en_US.UTF-8 && \
     /usr/bin/fix-permissions /demos
