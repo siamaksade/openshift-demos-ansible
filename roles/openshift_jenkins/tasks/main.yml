@@ -37,12 +37,17 @@
   ignore_errors: true
   changed_when: false
 
+- name: import jenkins image tag {{ jenkins_image_tag }}
+  shell: "{{ openshift_cli }} import-image jenkins:{{ jenkins_image_tag }} --from='registry.access.redhat.com/openshift3/jenkins-2-rhel7:{{ jenkins_image_tag }}' --confirm -n openshift"
+  ignore_errors: true
+  when: install_jenkins|failed and jenkins_image_tag != 'latest'
+
 - name: deploy jenkins persistent from template
-  shell: "{{ openshift_cli }} new-app jenkins-persistent -l app=jenkins -p MEMORY_LIMIT=1Gi -n {{ project_name }}"
+  shell: "{{ openshift_cli }} new-app jenkins-persistent -l app=jenkins -p JENKINS_IMAGE_STREAM_TAG=jenkins:{{ jenkins_image_tag }} -p MEMORY_LIMIT=1Gi -n {{ project_name }}"
   when: install_jenkins|failed and not ephemeral
 
 - name: deploy jenkins ephemeral from template
-  shell: "{{ openshift_cli }} new-app jenkins-ephemeral -l app=jenkins -p MEMORY_LIMIT=1Gi -n {{ project_name }}"
+  shell: "{{ openshift_cli }} new-app jenkins-ephemeral -l app=jenkins -p JENKINS_IMAGE_STREAM_TAG=jenkins:{{ jenkins_image_tag }} -p MEMORY_LIMIT=1Gi -n {{ project_name }}"
   when: install_jenkins|failed and ephemeral
 
 - name: set jenkins cpu and mem resources

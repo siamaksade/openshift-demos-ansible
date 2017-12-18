@@ -11,3 +11,5 @@ jenkins_min_mem: 512Mi
 
 jenkins_max_cpu: 1
 jenkins_min_cpu: 200m
+
+jenkins_image_tag: latest

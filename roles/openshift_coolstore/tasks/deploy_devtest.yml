@@ -14,7 +14,7 @@
   shell: >
     curl -sL {{ inventory_template }} | tr -d '\n' | tr -s '[:space:]' \
       | sed "s|\"MAVEN_MIRROR_URL\", \"value\": \"\"|\"MAVEN_MIRROR_URL\", \"value\": \"{{ maven_mirror_url }}\"|g" \
-      | sed "s|\"https://github.com/jbossdemocentral/coolstore-microservice\"|\"{{ gogs_url }}/{{ gogs_user }}/coolstore-microservice.git\"|g" \
+      | sed "s|\"https://github.com/jbossdemocentral/coolstore-microservice\"|\"http://{{ gogs_hostname }}/{{ gogs_user }}/coolstore-microservice.git\"|g" \
       | {{ openshift_cli }} create -f - -n {{ project_dev }}
   when: inventory_template_deploy_result|failed
 

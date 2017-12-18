@@ -58,4 +58,3 @@ project_admin:
 projects_join_with: "{{ project_cicd }}"
 
 workshopper_content_url_prefix: https://raw.githubusercontent.com/osevg/workshopper-content/master
-workshopper_workshop_urls: "{{ guides_content_url }}/_workshops/{{ guides_yaml }}"
