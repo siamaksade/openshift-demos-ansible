@@ -1,6 +1,6 @@
 ---
 ## Deploy Gogs Git Server
-- name: deploy gogs from template
+- name: deploy gogs from template (persistent)
   shell: |
     {{ openshift_cli }} new-app -f https://raw.githubusercontent.com/OpenShiftDemos/gogs-openshift-docker/master/openshift/gogs-persistent-template.yaml \
         --param=HOSTNAME={{ gogs_route }} \
@@ -9,7 +9,7 @@
         -n {{ project_name }}
   when: not ephemeral
 
-- name: deploy gogs from template
+- name: deploy gogs from template (ephemeral)
   shell: |
     {{ openshift_cli }} new-app -f https://raw.githubusercontent.com/OpenShiftDemos/gogs-openshift-docker/master/openshift/gogs-template.yaml \
         --param=HOSTNAME={{ gogs_route }} \

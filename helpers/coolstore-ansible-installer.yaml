@@ -8,20 +8,20 @@ parameters:
   name: GITHUB_REPO
   required: true
 - displayName: Playbooks Git Ref
-  value: "master"
+  value: master
   name: GITHUB_REF
   required: true
 - displayName: CoolStore Demo Name
   description: The name of the coolstore demo to deploy e.g. msa-cicd-eap-full, msa-cicd-eap-min, msa-full, msa-min
-  value: "msa-min"
-  name: COOLSTORE_DEMO_NAME
+  value: msa-min
+  name: DEMO_NAME
   required: true
 - displayName: CoolStore GitHub Account
-  value: "jbossdemocentral"
+  value: jbossdemocentral
   name: COOLSTORE_GITHUB_ACCOUNT
   required: true
 - displayName: CoolStore GitHub Ref
-  value: "stable-ocp-3.7"
+  value: stable-ocp-3.7
   name: COOLSTORE_GITHUB_REF
   required: true
 - displayName: Maven Mirror URL
@@ -71,7 +71,7 @@ objects:
                 fieldRef:
                   fieldPath: metadata.namespace
           args:
-          - /demos/playbooks/coolstore/${COOLSTORE_DEMO_NAME}.yml 
+          - /demos/playbooks/coolstore/${DEMO_NAME}.yml 
           - -e
           - "github_account=${COOLSTORE_GITHUB_ACCOUNT} github_ref=${COOLSTORE_GITHUB_REF} project_admin=${PROJECT_ADMIN} project_suffix=${PROJECT_SUFFIX} ephemeral=${EPHEMERAL} deploy_guides=${DEPLOY_GUIDES} ${ANSIBLE_EXTRA_VARS}"
           image: ${ANSIBLE_PLAYBOOKS_IMAGE}
