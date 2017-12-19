@@ -29,7 +29,7 @@ on any OpenShift environment:
       -e "openshift_master=$(oc whoami --show-server) oc_token=$(oc whoami -t) github_ref=stable-ocp-3.7"
   ```
 
-### Run Playbooks on OpenShift (with system:admin)
+### Run Playbooks on OpenShift (with cluster admin)
 
 The [provided templates](helpers/coolstore-ansible-installer.yaml) creates an OpenShift Job to run 
 the Ansible playbooks. Check out the template for the complete list of paramters available.
