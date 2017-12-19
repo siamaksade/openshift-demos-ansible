@@ -28,7 +28,7 @@
       display: "{{ project_dev_name }}"
       desc: "{{ project_dev_desc }}"
       
-- name: assign user {{ project_admin }} as project admin
+- name: assign user as project admin
   shell: "oc adm policy add-role-to-user admin {{ project_admin }} -n {{ item }}"
   ignore_errors: true
   with_items: 

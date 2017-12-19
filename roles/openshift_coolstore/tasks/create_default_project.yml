@@ -5,6 +5,17 @@
   shell: "{{ openshift_cli }} new-project {{ project_default}} --display-name='{{ project_default_name }}' --description='{{ project_default_desc }}'"
   ignore_errors: true
 
+- debug: 
+    var: project_admin
+      
+- name: assign user as project admin in {{ project_default }}
+  shell: "oc adm policy add-role-to-user admin {{ project_admin }} -n {{ project_default }}"
+  ignore_errors: true
+  when: 
+  - project_admin is defined
+  - project_admin is not none
+  - project_admin|trim() != ""
+
 - name: adjust serviceaccount permissions in project {{ project_default }} 
   shell: "{{ openshift_cli }} adm policy add-role-to-group admin system:serviceaccounts:{{ project_default }} -n {{ project_default}}"
   ignore_errors: true
@@ -12,11 +23,3 @@
 - name: annotate project {{ project_default }} 
   shell: "{{ openshift_cli }} annotate --overwrite namespace {{ project_default }} {{ project_annotations }}"
   ignore_errors: true
-      
-- name: assign user {{ project_admin }} as project admin in {{ project_default }}
-  shell: "oc adm policy add-role-to-user admin {{ project_admin }} -n {{ project_default }}"
-  ignore_errors: true
-  when: 
-  - project_admin is defined
-  - project_admin is not none
-  - project_admin|trim() != ""

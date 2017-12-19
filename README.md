@@ -35,9 +35,13 @@ The [provided templates](helpers/coolstore-ansible-installer.yaml) creates an Op
 the Ansible playbooks. Check out the template for the complete list of paramters available.
 
   ```
+  $ oc login -u system:admin
   $ oc new-project demo-installer
   $ oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:demo-installer:default
-  $ oc new-app -f helpers/coolstore-ansible-installer.yaml -n demo-installer
+  
+  $ oc new-app -f http://bit.ly/coolstore-ansible-template --param=COOLSTORE_DEMO_NAME=msa-full --param=PROJECT_ADMIN=developer
+
+  $ oc logs -f jobs/coolstore-ansible-installer
   ```
 
 ### Playbooks
