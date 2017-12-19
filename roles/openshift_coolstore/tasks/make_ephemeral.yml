@@ -17,11 +17,11 @@
     - "{{ dc_vol_list | default([]) | json_query('[?vol != null]') }}"
     - vol
 
-# - name: list deployment configs that use database in {{ project_name }}
-#   shell: "{{ openshift_cli }} get dc -l uses-database=true -o json -n {{ project_name }}"
-#   register: deploymentconfigs_with_database_list
-#   changed_when: false
+- name: list deployment configs that use database in {{ project_name }}
+  shell: "{{ openshift_cli }} get dc -l uses-database=true -o json -n {{ project_name }}"
+  register: deploymentconfigs_with_database_list
+  changed_when: false
 
-# - name: restart deployments that use database to re-init databases in {{ project_name }}
-#   shell: "{{ openshift_cli }} rollout latest dc/{{ item.metadata.name }} -n {{ project_name }}"
-#   with_items: "{{ deploymentconfigs_with_database_list.stdout|default('[]')|from_json|json_query('items') }}"
+- name: restart deployments that use database to re-init databases in {{ project_name }}
+  shell: "{{ openshift_cli }} rollout latest dc/{{ item.metadata.name }} -n {{ project_name }}"
+  with_items: "{{ deploymentconfigs_with_database_list.stdout|default('[]')|from_json|json_query('items') }}"
