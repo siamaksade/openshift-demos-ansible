@@ -11,23 +11,23 @@ on any OpenShift environment:
 * [Install Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html)
 * Run the playbooks
 
-  ```
-  $ git clone https://github.com/siamaksade/openshift-demos-ansible.git
-  $ cd openshift-demos-ansible
-  $ oc login http://openshiftmaster
-  $ ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml -e "github_ref=stable-ocp-3.7"
-  ```
+```
+$ git clone https://github.com/siamaksade/openshift-demos-ansible.git
+$ cd openshift-demos-ansible
+$ oc login http://openshiftmaster
+$ ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml -e "github_ref=stable-ocp-3.7"
+```
 
 ### Run Playbooks Locally (Docker Installed)
 
 * Install Docker
 * Run the playbooks
 
-  ```
-  $ oc login http://openshiftmaster
-  $ docker run --rm -it siamaksade/openshift-demos-ansible playbooks/coolstore/msa-cicd-eap-min.yml \
-      -e "openshift_master=$(oc whoami --show-server) oc_token=$(oc whoami -t) github_ref=stable-ocp-3.7"
-  ```
+```
+$ oc login http://openshiftmaster
+$ docker run --rm -it siamaksade/openshift-demos-ansible playbooks/coolstore/msa-cicd-eap-min.yml \
+    -e "openshift_master=$(oc whoami --show-server) oc_token=$(oc whoami -t) github_ref=stable-ocp-3.7"
+```
 
 ### Run Playbooks on OpenShift (with cluster admin)
 
