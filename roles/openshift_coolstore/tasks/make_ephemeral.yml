@@ -22,6 +22,6 @@
   register: deploymentconfigs_with_database_list
   changed_when: false
 
-- name: restart deployments that use database to re-init databases in {{ project_name }}
-  shell: "{{ openshift_cli }} rollout latest dc/{{ item.metadata.name }} -n {{ project_name }}"
+- name: redeploy pods that use database to re-init databases in {{ project_name }}
+  shell: "{{ openshift_cli }} delete pod -l deploymentconfig={{ item.metadata.name }} -n {{ project_name }}"
   with_items: "{{ deploymentconfigs_with_database_list.stdout|default('[]')|from_json|json_query('items') }}"
