@@ -33,13 +33,13 @@
 - name: download coolstore-microservices code from GitHub
   get_url:
     url: https://github.com/{{ github_account }}/coolstore-microservice/archive/{{ github_ref }}.zip
-    dest: "{{ git_dir.path }}/{{ github_ref }}.tar.gz"
+    dest: "{{ git_dir.path }}/{{ github_ref }}.zip"
     mode: 0755
   when: repo_result.status != 200
 
 - name: unarchive coolstore-microservices source archive
   unarchive:
-    src: "{{ git_dir.path }}/{{ github_ref }}.tar.gz"
+    src: "{{ git_dir.path }}/{{ github_ref }}.zip"
     dest: "{{ git_dir.path }}"
   when: repo_result.status != 200
 
