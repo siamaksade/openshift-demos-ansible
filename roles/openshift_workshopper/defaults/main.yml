@@ -8,6 +8,6 @@ openshift_cli: oc
 
 workshopper_yaml: demo-cicd-eap.yml
 workshopper_content_url_prefix: https://raw.githubusercontent.com/osevg/workshopper-content/master
-workshopper_workshop_urls: "{{ workshopper_content_url_prefix }}/_workshops/{{ workshopper_yaml }}"
+workshopper_workshop_urls: "{{ workshopper_content_url_prefix }}/{{ workshopper_yaml }}"
 
 workshopper_env_vars: {}
