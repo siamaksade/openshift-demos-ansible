@@ -1,4 +1,11 @@
 ---
+# playbook for deploying a pipeline to pre-build coolstore container images and 
+# reduce the deploy time for the demo
+# 
+# Usage: ansible-playbook imagebuild-pipeline.yml \
+#             -e "github_ref=stable-ocp-3.7" \
+#             -e "maven_mirror_url=http://nexus/content/all"
+
 - name: Create CoolStore Image Build Pipeline to Pre-Build Images
   hosts: localhost
   gather_facts: false
