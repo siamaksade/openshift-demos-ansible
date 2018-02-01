@@ -27,7 +27,8 @@ $ ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml -e "github_ref=stabl
 $ oc login http://openshiftmaster
 $ docker run --rm -it siamaksade/openshift-demos-ansible playbooks/coolstore/msa-cicd-eap-min.yml \
       -e "openshift_master=$(oc whoami --show-server)" \
-      -e "oc_token=$(oc whoami -t) github_ref=stable-ocp-3.7"
+      -e "oc_token=$(oc whoami -t)" \
+      -e "github_ref=stable-ocp-3.7"
 ```
 
 ### Run Playbooks on OpenShift (with cluster admin)
