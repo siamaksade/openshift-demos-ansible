@@ -6,7 +6,7 @@ In order to deploy the complete demo infrastructure for demonstrating Microservi
 agile integrations and more, either order the demo via RHPDS or use the following script to provision the demo
 on any OpenShift environment:
 
-### Run Playbooks Locally (Ansible Installed)
+### Run Playbooks Locally (Ansible installed)
 
 * [Install Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html)
 * Run the playbooks
@@ -18,7 +18,7 @@ $ oc login http://openshiftmaster
 $ ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml -e "github_ref=stable-ocp-3.7"
 ```
 
-### Run Playbooks Locally (Docker Installed)
+### Run Playbooks Locally (Docker installed)
 
 * Install Docker
 * Run the playbooks
@@ -26,7 +26,8 @@ $ ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml -e "github_ref=stabl
 ```
 $ oc login http://openshiftmaster
 $ docker run --rm -it siamaksade/openshift-demos-ansible playbooks/coolstore/msa-cicd-eap-min.yml \
-    -e "openshift_master=$(oc whoami --show-server) oc_token=$(oc whoami -t) github_ref=stable-ocp-3.7"
+      -e "openshift_master=$(oc whoami --show-server)" \
+      -e "oc_token=$(oc whoami -t) github_ref=stable-ocp-3.7"
 ```
 
 ### Run Playbooks on OpenShift (with cluster admin)
@@ -39,7 +40,10 @@ the Ansible playbooks. Check out the template for the complete list of paramters
   $ oc new-project demo-installer
   $ oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:demo-installer:default
   
-  $ oc new-app -f http://bit.ly/coolstore-ansible-template --param=DEMO_NAME=msa-full --param=PROJECT_ADMIN=developer
+  $ oc new-app -f http://bit.ly/coolstore-ansible-template \
+      --param=DEMO_NAME=msa-full \
+      --param=PROJECT_ADMIN=developer \
+      --param=COOLSTORE_GITHUB_REF=stable-ocp-3.7
 
   $ oc logs -f jobs/coolstore-ansible-installer
   ```
