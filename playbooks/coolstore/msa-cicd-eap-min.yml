@@ -9,6 +9,7 @@
   tasks:
     - include_role:
         name: common
+      tags: always
 
     - import_role:
         name: openshift_gogs
@@ -18,6 +19,7 @@
         project_desc: "{{ project_cicd_desc }}"
         project_annotations: "demo=demo-modern-arch-{{ project_suffix }}"
         gogs_route: "gogs-{{ project_cicd }}.{{ apps_hostname_suffix }}"
+      tags: cicd
 
     - import_role:
         name: openshift_nexus
@@ -27,12 +29,14 @@
         maven_mirror_url is not defined or
         maven_mirror_url is none or
         maven_mirror_url|trim() == ""
+      tags: cicd
 
     - import_role:
         name: openshift_jenkins
       vars:
         project_name: "{{ project_cicd }}"
         jenkins_image_tag: "v3.7"
+      tags: cicd
 
     - import_role:
         name: openshift_workshopper
@@ -52,6 +56,7 @@
           GOGS_REVIEWER_USER: "{{ gogs_admin_user }}"
           GOGS_REVIEWER_PASSWORD: "{{ gogs_admin_password }}"
       when: deploy_guides
+      tags: guides
 
     - import_role:
         name: openshift_coolstore
@@ -62,3 +67,5 @@
         prune_deployments_selector: "comp-required!=true,app!=inventory"
         prune_builds_selector: "comp-required!=true,app!=inventory"
         disable_stage_project: true
+      tags: 
+        - demo
