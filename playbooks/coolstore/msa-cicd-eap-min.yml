@@ -44,7 +44,7 @@
       vars:
         project_name: "{{ project_cicd }}"
         workshopper_content_url_prefix: https://raw.githubusercontent.com/siamaksade/coolstore-demo-guides/openshift-3.7
-        workshopper_workshop_urls: {{ workshopper_content_url_prefix }}/demo-cicd-eap-min.yml
+        workshopper_workshop_urls: "{{ workshopper_content_url_prefix }}/demo-cicd-eap-min.yml"
         workshopper_env_vars:
           PROJECT_SUFFIX: "{{ project_suffix }}"
           GOGS_URL: http://gogs-{{ project_cicd }}.{{ apps_hostname_suffix }}
