@@ -15,6 +15,7 @@ on any OpenShift environment:
 $ git clone https://github.com/siamaksade/openshift-demos-ansible.git
 $ cd openshift-demos-ansible
 $ oc login http://openshiftmaster
+$ ansible-galaxy install -r playbooks/coolstore/requirements.yml
 $ ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml -e "github_ref=stable-ocp-3.7"
 ```
 

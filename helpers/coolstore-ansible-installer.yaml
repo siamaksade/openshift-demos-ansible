@@ -72,6 +72,8 @@ objects:
                   fieldPath: metadata.namespace
           args:
           - /demos/playbooks/coolstore/${DEMO_NAME}.yml 
+          - -r
+          - /demos/playbooks/coolstore/requirements.yml
           - -e
           - "github_account=${COOLSTORE_GITHUB_ACCOUNT} github_ref=${COOLSTORE_GITHUB_REF} project_admin=${PROJECT_ADMIN} project_suffix=${PROJECT_SUFFIX} ephemeral=${EPHEMERAL} deploy_guides=${DEPLOY_GUIDES} ${ANSIBLE_EXTRA_VARS}"
           image: ${ANSIBLE_PLAYBOOKS_IMAGE}

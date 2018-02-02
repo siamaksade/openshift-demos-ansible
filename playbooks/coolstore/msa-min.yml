@@ -8,7 +8,7 @@
 
   tasks:
     - include_role:
-        name: common
+        name: openshift_commons_facts
 
     - import_role:
         name: openshift_coolstore
