@@ -7,7 +7,6 @@ USER root
 ADD helpers/bin/fix-permissions /usr/bin/fix-permissions
 ADD helpers/bin/run-playbook /usr/bin/run-playbook
 ADD playbooks /demos/playbooks
-ADD roles /demos/roles
 ADD ansible.cfg /demos
 
 RUN yum -y install nss_wrapper unzip && \
