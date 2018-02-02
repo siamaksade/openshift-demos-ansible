@@ -1,8 +1,0 @@
----
-## deploy coolstore demo
-
-- import_tasks: main_default.yml
-  when: not enable_cicd
-
-- import_tasks: main_cicd.yml
-  when: enable_cicd

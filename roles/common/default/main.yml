@@ -1,6 +1,0 @@
----
-set_hostname_suffix: true
-
-# oc_kube_config: 
-# oc_token: 
-# openshift_master:
