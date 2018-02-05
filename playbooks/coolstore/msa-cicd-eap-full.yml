@@ -22,7 +22,7 @@
       tags: cicd
 
     - import_role:
-        name: openshift_nexus
+        name: openshift_sonatype_nexus
       vars:
         project_name: "{{ project_cicd }}"
       when: >
