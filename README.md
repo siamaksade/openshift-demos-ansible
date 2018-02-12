@@ -6,6 +6,13 @@ In order to deploy the complete demo infrastructure for demonstrating Microservi
 agile integrations and more, either order the demo via RHPDS or use the following script to provision the demo
 on any OpenShift environment:
 
+#### Prerequisites
+* [JBoss](https://raw.githubusercontent.com/jboss-openshift/application-templates/ose-v1.4.8-1/jboss-image-streams.json) and [Fuse](https://raw.githubusercontent.com/openshift/openshift-ansible/master/roles/openshift_examples/files/examples/v3.7/xpaas-streams/fis-image-streams.json) image streams installed on OpenShift ([instructions](https://docs.openshift.com/container-platform/3.7/install_config/imagestreams_templates.html#creating-image-streams-for-xpaas-middleware-images))
+* Jenkins 3.7 tag imported to OpenShift, if not running the playbooks as `system:admin`
+  ```
+  oc import-image jenkins:v3.7 --from='registry.access.redhat.com/openshift3/jenkins-2-rhel7:v3.7' --confirm -n openshift
+  ```
+
 ### Run Playbooks Locally (Ansible installed)
 
 * [Install Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html)
