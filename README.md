@@ -21,6 +21,7 @@ on any OpenShift environment:
 ```
 $ git clone https://github.com/siamaksade/openshift-demos-ansible.git
 $ cd openshift-demos-ansible
+$ git checkout ocp-3.7
 $ oc login http://openshiftmaster
 $ ansible-galaxy install -r playbooks/coolstore/requirements.yml
 $ ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml -e "github_ref=stable-ocp-3.7"
@@ -33,7 +34,7 @@ $ ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml -e "github_ref=stabl
 
 ```
 $ oc login http://openshiftmaster
-$ docker run --rm -it siamaksade/openshift-demos-ansible playbooks/coolstore/msa-cicd-eap-min.yml \
+$ docker run --rm -it siamaksade/openshift-demos-ansible:ocp-3.7 playbooks/coolstore/msa-cicd-eap-min.yml \
       -e "openshift_master=$(oc whoami --show-server)" \
       -e "oc_token=$(oc whoami -t)" \
       -e "github_ref=stable-ocp-3.7"
@@ -53,6 +54,7 @@ the Ansible playbooks. Check out the template for the complete list of paramters
       --param=DEMO_NAME=msa-full \
       --param=PROJECT_ADMIN=developer \
       --param=COOLSTORE_GITHUB_REF=stable-ocp-3.7
+      --param=ANSIBLE_PLAYBOOKS_VERSION=ocp-3.7
 
   $ oc logs -f jobs/coolstore-ansible-installer
   ```
