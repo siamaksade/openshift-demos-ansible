@@ -6,6 +6,8 @@
   tasks:
   - include_role:
       name: openshift_common_facts
+    vars:
+      set_hostname_suffix: false
       
   # verify default project
   - name: check if project {{ project_default }} exists
