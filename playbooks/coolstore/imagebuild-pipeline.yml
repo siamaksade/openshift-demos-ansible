@@ -21,7 +21,7 @@
       set_hostname_suffix: false
 
   - name: check if image builder project exists
-    shell: "{{ openshift_cli }} get project -n {{ project_name }}"
+    shell: "{{ openshift_cli }} get project {{ project_name }}"
     register: result
     ignore_errors: true
     changed_when: false
@@ -38,7 +38,6 @@
       jenkins_image_tag: "v3.7"
       jenkins_image_force_import: "true"
       jenkins_max_cpu: 2
-    tags: cicd
 
   - name: create coolstore image build pipeline
     shell: "{{ openshift_cli }} process -f {{ pipeline_template }} --param=GITHUB_ACCOUNT={{ github_account }} --param=GITHUB_REF={{ github_ref }} --param=MAVEN_MIRROR_URL={{ maven_mirror_url }} -n {{ project_name }} | {{ openshift_cli }} create -f - -n {{ project_name }}"
