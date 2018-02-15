@@ -29,8 +29,10 @@
     sleep 5
     {{ openshift_cli }} rollout latest dc/{{ dc.metadata.name }} -n {{ project_name }}
     {{ openshift_cli }} rollout status dc/{{ dc.metadata.name }} -n {{ project_name }}
-  when: result|succeeded and dc.status.availableReplicas != dc.spec.replicas
+  when: 
+    - result|succeeded 
+    - deploymentconfigs_list_json|succeeded
+    - dc.status.availableReplicas != dc.spec.replicas
   loop_control:
     loop_var: dc
-    label: "{{ dc.metadata.name }}"
   with_items: "{{ deploymentconfigs_list_json.stdout|default('[]')|from_json|json_query('items') }}"
