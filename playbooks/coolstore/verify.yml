@@ -17,7 +17,7 @@
     changed_when: false
 
   - include_tasks: verify_tasks.yml project_name={{ project_default }}
-    when: result|success
+    when: result|succeeded
 
   # verify cicd project
   - name: check if project {{ project_cicd }} exists
@@ -27,7 +27,7 @@
     changed_when: false
 
   - include_tasks: verify_tasks.yml project_name={{ project_cicd }}
-    when: result|success
+    when: result|succeeded
 
   # verify prod project
   - name: check if project {{ project_prod }} exists
@@ -37,7 +37,7 @@
     changed_when: false
 
   - include_tasks: verify_tasks.yml project_name={{ project_prod }}
-    when: result|success
+    when: result|succeeded
 
   # verify stage project
   - name: check if project {{ project_stage }} exists
@@ -47,7 +47,7 @@
     changed_when: false
 
   - include_tasks: verify_tasks.yml project_name={{ project_default }}
-    when: result|success
+    when: result|succeeded
 
   # verify test project
   - name: check if project {{ project_test }} exists
@@ -57,7 +57,7 @@
     changed_when: false
 
   - include_tasks: verify_tasks.yml project_name={{ project_test }}
-    when: result|success
+    when: result|succeeded
 
   # verify dev project
   - name: check if project {{ project_dev }} exists
@@ -67,5 +67,5 @@
     changed_when: false
 
   - include_tasks: verify_tasks.yml project_name={{ project_dev }}
-    when: result|success
+    when: result|succeeded
 
