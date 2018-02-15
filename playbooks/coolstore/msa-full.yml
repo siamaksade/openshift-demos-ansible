@@ -18,7 +18,7 @@
         enable_cicd: false
 
     - name: wait for deployments to complete (succeed or fail)
-      shell: "oc get pods -n {{ project_default }} | grep '\\-deploy' | grep 'Running'"
+      shell: "oc get pods -n {{ project_default }} | grep '\\-deploy\\s' | grep 'Running'"
       register: deployment_running
       until: deployment_running|failed
       retries: 20
