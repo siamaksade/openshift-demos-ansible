@@ -43,7 +43,7 @@ $ docker run --rm -it siamaksade/openshift-demos-ansible:ocp-3.7 playbooks/cools
 ### Run Playbooks on OpenShift (with cluster admin)
 
 The [provided templates](helpers/coolstore-ansible-installer.yaml) creates an OpenShift Job to run 
-the Ansible playbooks. Check out the template for the complete list of paramters available.
+the Ansible playbooks. Check out the template for the complete list of parameters available.
 
   ```
   $ oc login -u system:admin
@@ -72,7 +72,7 @@ the Ansible playbooks. Check out the template for the complete list of paramters
 
 ### Variables
 
-You can modify the playbooks behaviour by specifying extra variables
+You can modify the playbooks behavior by specifying extra variables
 
 ```
 $ ansible-playbook demos/coolstore/msa-min.yml -e "github_ref=stable-ocp-3.7 ephemeral=true project_suffix=demo1"

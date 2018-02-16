@@ -9,7 +9,10 @@
   tasks:
     - include_role:
         name: openshift_common_facts
-      tags: always
+      tags:
+        - cicd
+        - guides
+        - demo
 
     - import_role:
         name: openshift_gogs
@@ -70,46 +73,106 @@
       tags: 
         - demo
 
-    # verify deployments in ci/cd project
-    - name: wait for deployments in project {{ project_cicd }} to complete (succeed or fail)
-      shell: "oc get pods -n {{ project_cicd }} | grep '\\-deploy\\s' | grep 'Running'"
+    # verify database deployments in cicd project
+    - name: wait for database deployments in project {{ project_cicd }} to complete (succeed or fail)
+      shell: "oc get pods -n {{ project_cicd }} -l comp-type=database | grep '\\-deploy\\s' | grep 'Running'"
       register: deployment_running
       until: deployment_running|failed
       retries: 20
       delay: 30
       ignore_errors: true
+      tags: verify
 
-    - include_tasks: verify_tasks.yml project_name={{ project_cicd }}
+    - include_tasks: verify_tasks.yml project_name={{ project_cicd }} selector="comp-type=database"
+      tags: verify
 
-    # verify deployments in prod project
-    - name: wait for deployments in project {{ project_prod }} to complete (succeed or fail)
-      shell: "oc get pods -n {{ project_prod }} | grep '\\-deploy\\s' | grep 'Running'"
+    # verify database deployments in prod project
+    - name: wait for database deployments in project {{ project_prod }} to complete (succeed or fail)
+      shell: "oc get pods -n {{ project_prod }} -l comp-type=database | grep '\\-deploy\\s' | grep 'Running'"
       register: deployment_running
       until: deployment_running|failed
       retries: 20
       delay: 30
       ignore_errors: true
+      tags: verify
 
-    - include_tasks: verify_tasks.yml project_name={{ project_prod }}
+    - include_tasks: verify_tasks.yml project_name={{ project_prod }} selector="comp-type=database"
 
-    # verify deployments in test project
-    - name: wait for deployments in project {{ project_test }} to complete (succeed or fail)
-      shell: "oc get pods -n {{ project_test }} | grep '\\-deploy\\s' | grep 'Running'"
+    # verify database deployments in test project
+    - name: wait for database deployments in project {{ project_test }} to complete (succeed or fail)
+      shell: "oc get pods -n {{ project_test }} -l comp-type=database | grep '\\-deploy\\s' | grep 'Running'"
       register: deployment_running
       until: deployment_running|failed
       retries: 20
       delay: 30
       ignore_errors: true
+      tags: verify
 
-    - include_tasks: verify_tasks.yml project_name={{ project_test }}
+    - include_tasks: verify_tasks.yml project_name={{ project_test }} selector="comp-type=database"
 
-    # verify deployments in dev project
-    - name: wait for deployments in project {{ project_dev }} to complete (succeed or fail)
-      shell: "oc get pods -n {{ project_dev }} | grep '\\-deploy\\s' | grep 'Running'"
+    # verify database deployments in dev project
+    - name: wait for database deployments in project {{ project_dev }} to complete (succeed or fail)
+      shell: "oc get pods -n {{ project_dev }} -l comp-type=database | grep '\\-deploy\\s' | grep 'Running'"
       register: deployment_running
       until: deployment_running|failed
       retries: 20
       delay: 30
       ignore_errors: true
+      tags: verify
 
-    - include_tasks: verify_tasks.yml project_name={{ project_dev }}
+    - include_tasks: verify_tasks.yml project_name={{ project_dev }} selector="comp-type=database"
+      tags: verify
+
+
+    # verify other deployments in cicd project
+    - name: wait for other deployments in project {{ project_cicd }} to complete (succeed or fail)
+      shell: "oc get pods -n {{ project_cicd }} -l comp-type!=database | grep '\\-deploy\\s' | grep 'Running'"
+      register: deployment_running
+      until: deployment_running|failed
+      retries: 20
+      delay: 30
+      ignore_errors: true
+      tags: verify
+
+    - include_tasks: verify_tasks.yml project_name={{ project_cicd }} selector="comp-type!=database"
+      tags: verify
+
+
+    # verify other deployments in prod project
+    - name: wait for other deployments in project {{ project_prod }} to complete (succeed or fail)
+      shell: "oc get pods -n {{ project_prod }} -l comp-type!=database | grep '\\-deploy\\s' | grep 'Running'"
+      register: deployment_running
+      until: deployment_running|failed
+      retries: 20
+      delay: 30
+      ignore_errors: true
+      tags: verify
+
+    - include_tasks: verify_tasks.yml project_name={{ project_prod }} selector="comp-type!=database"
+      tags: verify
+
+    # verify other deployments in test project
+    - name: wait for other deployments in project {{ project_test }} to complete (succeed or fail)
+      shell: "oc get pods -n {{ project_test }} -l comp-type!=database | grep '\\-deploy\\s' | grep 'Running'"
+      register: deployment_running
+      until: deployment_running|failed
+      retries: 20
+      delay: 30
+      ignore_errors: true
+      tags: verify
+
+    - include_tasks: verify_tasks.yml project_name={{ project_test }} selector="comp-type!=database"
+      tags: verify
+
+    # verify other deployments in dev project
+    - name: wait for other deployments in project {{ project_dev }} to complete (succeed or fail)
+      shell: "oc get pods -n {{ project_dev }} -l comp-type!=database | grep '\\-deploy\\s' | grep 'Running'"
+      register: deployment_running
+      until: deployment_running|failed
+      retries: 20
+      delay: 30
+      ignore_errors: true
+      tags: verify
+
+    - include_tasks: verify_tasks.yml project_name={{ project_dev }} selector="comp-type!=database"
+      tags: verify
