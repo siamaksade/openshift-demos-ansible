@@ -70,8 +70,7 @@
         prune_deployments_selector: "comp-required!=true,app!=inventory"
         prune_builds_selector: "comp-required!=true,app!=inventory"
         disable_stage_project: true
-      tags: 
-        - demo
+      tags: demo
 
     # verify database deployments in cicd project
     - name: wait for database deployments in project {{ project_cicd }} to complete (succeed or fail)
