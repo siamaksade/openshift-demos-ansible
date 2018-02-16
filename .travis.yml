@@ -18,7 +18,6 @@ install:
   - ansible-playbook playbooks/coolstore/undeploy.yml             --syntax-check
   - ansible-playbook playbooks/coolstore/idle.yml                 --syntax-check
   - ansible-playbook playbooks/coolstore/unidle.yml               --syntax-check
-  - ansible-playbook playbooks/coolstore/verify.yml               --syntax-check
   - ansible-playbook playbooks/coolstore/imagebuild-pipeline.yml  --syntax-check
   - ansible-playbook playbooks/coolstore/msa-cicd-eap-full.yml    --syntax-check
   - ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml     --syntax-check
