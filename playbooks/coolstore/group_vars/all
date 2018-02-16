@@ -2,6 +2,7 @@
 # oc_kube_config: 
 # oc_token: 
 # openshift_master:
+openshift_cli: oc
 
 project_suffix: demo
 
