@@ -58,4 +58,4 @@ nexus_image_version: 3.6.1
 
 projects_join_with: "{{ project_cicd }}"
 
-workshopper_content_url_prefix: https://raw.githubusercontent.com/siamaksade/coolstore-demo-guides/openshift-3.7
+workshopper_content_url_prefix: https://raw.githubusercontent.com/siamaksade/coolstore-demo-guides/openshift-3.9
