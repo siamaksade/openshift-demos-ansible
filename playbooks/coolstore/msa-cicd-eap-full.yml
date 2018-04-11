@@ -59,6 +59,26 @@
       when: deploy_guides
       tags: guides
 
+    # deploy eclipse che
+    - import_role:
+        name: openshift_eclipse_che
+      vars:
+        project_name: "{{ project_cicd }}"
+        che_version: "latest"
+        route_suffix: "{{ apps_hostname_suffix }}"
+      tags: eclipse-che
+
+    - name: wait for eclipse che to be running
+      uri:
+        url: http://che-{{ project_cicd }}.{{ apps_hostname_suffix }}/api/
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: "30"
+      delay: "10"
+      tags: eclipse-che
+
+    # deploy coolstore
     - import_role:
         name: openshift_coolstore
       vars:
