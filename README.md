@@ -57,13 +57,27 @@ the Ansible playbooks. Check out the template for the complete list of parameter
 
 ### Playbooks
 
+**CoolStore Demo**
+
+Demo repository: https://github.com/jbossdemocentral/coolstore-microservice
+
 | Playbook                                                      | Description                                                             | Memory     | CPU     |
 |---------------------------------------------------------------|-------------------------------------------------------------------------|------------|---------|
-| [msa-min](playbooks/coolstore/msa-min.yml)                    | Deploys CoolStore with min required services                            | 4 GB       | 1 cores |
-| [msa-full](playbooks/coolstore/msa-full.yml)                  | Deploys CoolStore with all services                                     | 8 GB       | 2 cores |
-| [msa-cicd-eap-min](playbooks/coolstore/msa-cicd-eap-min.yml)  | Deploys CoolStore with CI/CD and min services (Dev-Prod)                | 8 GB       | 2 cores |
-| [msa-cicd-eap-full](playbooks/coolstore/msa-cicd-eap-full.yml)| Deploys CoolStore with CI/CD and all services (Dev-Test-Prod)           | 20 GB      | 8 cores |
-| [undeploy](playbooks/coolstore/undeploy.yml)                  | Delete the demos                                                        | -          | -       |
+| [coolstore/msa-min.yml](playbooks/coolstore/msa-min.yml)                    | Deploys CoolStore with min required services                           | 4 GB       | 1 cores |
+| [coolstore/msa-full.yml](playbooks/coolstore/msa-full.yml)                  | Deploys CoolStore with all services                                     | 8 GB       | 2 cores |
+| [coolstore/msa-cicd-eap-min.yml](playbooks/coolstore/msa-cicd-eap-min.yml)  | Deploys CoolStore with CI/CD and min services (Dev-Prod)                | 8 GB       | 2 cores |
+| [coolstore/msa-cicd-eap-full.yml](playbooks/coolstore/msa-cicd-eap-full.yml)| Deploys CoolStore with CI/CD and all services (Dev-Test-Prod)           | 20 GB      | 8 cores |
+| [coolstore/undeploy.yml](playbooks/coolstore/undeploy.yml)                  | Delete the demo                                                         | -          | -       |
+
+
+**Monolith CI/CD Demo**
+
+Demo repisotory: https://github.com/OpenShiftDemos/openshift-cd-demo
+
+| Playbook                               | Description                 | Memory     | CPU     |
+|----------------------------------------|-----------------------------|------------|---------|
+| [cd/deploy.yml](playbooks/cd/deploy.yml)      | Deploys Monolith CI/CD demo | 8 GB       | 2 cores |
+| [cd/undeploy.yml](playbooks/cd/undeploy.yml)  | Delete the demo             | -          | -       |
 
 
 ### Variables

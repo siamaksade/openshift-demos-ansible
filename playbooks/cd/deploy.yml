@@ -1,0 +1,57 @@
+---
+- name: Deploy Coolstore Microservices Demo
+  hosts: localhost
+  gather_facts: false
+  run_once: true
+
+  tasks:
+    - include_role:
+        name: openshift_common_facts
+      vars:
+        set_hostname_suffix: false
+
+    - name: create projects
+      shell: |
+        {{ openshift_cli }} new-project dev-{{ project_suffix }}  --display-name="Tasks - Dev"
+        {{ openshift_cli }} new-project stage-{{ project_suffix }} --display-name="Tasks - Stage"
+        {{ openshift_cli }} new-project cicd-{{ project_suffix }}  --display-name="CI/CD"
+      ignore_errors: true
+
+    - name: set project permissions
+      shell: |
+        {{ openshift_cli }} policy add-role-to-user edit system:serviceaccount:cicd-{{ project_suffix }}:jenkins -n dev-{{ project_suffix }}
+        {{ openshift_cli }} policy add-role-to-user edit system:serviceaccount:cicd-{{ project_suffix }}:jenkins -n stage-{{ project_suffix }}
+      ignore_errors: true
+
+    - name: assign user as project admin
+      shell: "{{ openshift_cli }} adm policy add-role-to-user admin {{ project_admin }} -n {{ item }}"
+      ignore_errors: true
+      with_items: 
+        - cicd-{{ project_suffix }}
+        - dev-{{ project_suffix }}
+        - stage-{{ project_suffix }}
+      when:
+        - project_admin is defined
+        - project_admin is not none
+        - project_admin|trim() != ""
+
+    - name: annotate projects
+      shell: "{{ openshift_cli }} annotate --overwrite namespace {{ item }}   demo=openshift-cd-{{ project_suffix }}"
+      ignore_errors: true
+      with_items: 
+        - cicd-{{ project_suffix }}
+        - dev-{{ project_suffix }}
+        - stage-{{ project_suffix }}
+
+    - name: join project networks
+      shell: "{{ openshift_cli }} adm pod-network join-projects --to=cicd-{{ project_suffix }} dev-{{ project_suffix }} stage-{{ project_suffix }}"
+      ignore_errors: true
+
+    - import_role:
+        name: openshift_jenkins
+      vars:
+        project_name: cicd-{{ project_suffix }}
+
+    - name: deploy demo
+      shell: "{{ openshift_cli }} process -f {{ demo_template }} --param DEV_PROJECT=dev-{{ project_suffix }} --param STAGE_PROJECT=stage-{{ project_suffix }} --param=WITH_CHE={{ enable_che|string|lower }} --param=EPHEMERAL={{ ephemeral|string|lower }} -n cicd-{{ project_suffix }} | {{ openshift_cli }} create -f - -n cicd-{{ project_suffix }}"
+      ignore_errors: true

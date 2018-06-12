@@ -1,0 +1,53 @@
+---
+- name: Idle CI/CD Demo
+  hosts: localhost
+  gather_facts: false
+  run_once: true
+  tasks:
+  - include_role:
+      name: openshift_common_facts
+
+  # dev project
+  - name: list deployment configs in dev
+    shell: "{{ openshift_cli }} get dc -o json -n dev-{{ project_suffix }}"
+    register: deploymentconfigs_list
+    changed_when: false
+
+  - name: unidle all deployments in dev"
+    shell: "{{ openshift_cli }} scale --replicas={{ item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] }} dc {{ item.metadata.name }} -n dev-{{ project_suffix }}"
+    with_items: "{{ deploymentconfigs_list.stdout|from_json|json_query('items') }}"
+    when: >
+      item.metadata.annotations is defined and 
+      item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] is defined and
+      item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] is not none and
+      item.metadata.annotations['idling.alpha.openshift.io/previous-scale']|trim() != ""
+
+  # stage project
+  - name: list deployment configs in stage
+    shell: "{{ openshift_cli }} get dc -o json -n stage-{{ project_suffix }}"
+    register: deploymentconfigs_list
+    changed_when: false
+
+  - name: unidle all deployments in stage"
+    shell: "{{ openshift_cli }} scale --replicas={{ item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] }} dc {{ item.metadata.name }} -n stage-{{ project_suffix }}"
+    with_items: "{{ deploymentconfigs_list.stdout|from_json|json_query('items') }}"
+    when: >
+      item.metadata.annotations is defined and 
+      item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] is defined and
+      item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] is not none and
+      item.metadata.annotations['idling.alpha.openshift.io/previous-scale']|trim() != ""
+
+  # cicd project
+  - name: list deployment configs in cicd
+    shell: "{{ openshift_cli }} get dc -o json -n cicd-{{ project_suffix }}"
+    register: deploymentconfigs_list
+    changed_when: false
+
+  - name: unidle all deployments in cicd"
+    shell: "{{ openshift_cli }} scale --replicas={{ item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] }} dc {{ item.metadata.name }} -n cicd-{{ project_suffix }}"
+    with_items: "{{ deploymentconfigs_list.stdout|from_json|json_query('items') }}"
+    when: >
+      item.metadata.annotations is defined and 
+      item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] is defined and
+      item.metadata.annotations['idling.alpha.openshift.io/previous-scale'] is not none and
+      item.metadata.annotations['idling.alpha.openshift.io/previous-scale']|trim() != ""

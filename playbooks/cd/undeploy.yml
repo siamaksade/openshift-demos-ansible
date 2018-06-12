@@ -1,0 +1,14 @@
+---
+- name: Undeploy CI/CD Demo
+  hosts: localhost
+  gather_facts: false
+  run_once: true
+  tasks:
+  - include_role:
+      name: openshift_common_facts
+    vars:
+      set_hostname_suffix: false
+      
+  - name: delete projects
+    shell: "{{ openshift_cli }} delete project dev-{{ project_suffix }} stage-{{ project_suffix }} cicd-{{ project_suffix }}"
+    ignore_errors: true

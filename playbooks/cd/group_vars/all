@@ -1,0 +1,17 @@
+---
+# oc_kube_config: 
+# oc_token: 
+# openshift_master:
+openshift_cli: oc
+
+project_suffix: demo
+project_admin: 
+
+github_account: OpenShiftDemos
+github_ref: ocp-3.9
+
+ephemeral: false
+
+enable_che: true
+
+demo_template: https://raw.githubusercontent.com/{{ github_account }}/openshift-cd-demo/{{ github_ref }}/cicd-template.yaml
