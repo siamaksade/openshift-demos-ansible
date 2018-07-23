@@ -1,7 +1,7 @@
 - src: siamaksade.openshift_common_facts
-  version: ocp-3.9
+  version: ocp-3.10
   name: openshift_common_facts
 
 - src: siamaksade.openshift_jenkins
-  version: ocp-3.9
+  version: ocp-3.10
   name: openshift_jenkins

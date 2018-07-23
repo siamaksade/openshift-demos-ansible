@@ -22,6 +22,8 @@
         project_desc: "{{ project_cicd_desc }}"
         project_annotations: "demo=demo-modern-arch-{{ project_suffix }}"
         gogs_route: "gogs-{{ project_cicd }}.{{ apps_hostname_suffix }}"
+        gogs_deploy_retry_count: 60
+        gogs_deploy_retry_delay: 30
       tags: cicd
 
     - import_role:
@@ -68,6 +70,8 @@
         prune_deployments_selector: "comp-required!=true,app!=inventory"
         prune_builds_selector: "comp-required!=true,app!=inventory"
         disable_stage_project: true
+        src_github_account: "{{ github_account }}"
+        src_github_ref: stable-{{ github_ref }}
       tags: demo
 
     # verify deployed successfully

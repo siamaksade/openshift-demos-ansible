@@ -1,4 +1,4 @@
-FROM openshift/origin-ansible:v3.9
+FROM openshift/origin-ansible:v3.10
 
 WORKDIR /demos
 

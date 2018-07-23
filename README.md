@@ -7,7 +7,20 @@ agile integrations and more, either order the demo via RHPDS or use the followin
 on any OpenShift environment:
 
 #### Prerequisites
-* [JBoss](https://raw.githubusercontent.com/jboss-openshift/application-templates/ose-v1.4.8-1/jboss-image-streams.json) and [Fuse](https://raw.githubusercontent.com/openshift/openshift-ansible/master/roles/openshift_examples/files/examples/v3.9/xpaas-streams/fis-image-streams.json) image streams installed on OpenShift ([instructions](https://docs.openshift.com/container-platform/3.9/install_config/imagestreams_templates.html#creating-image-streams-for-xpaas-middleware-images))
+
+The following imagestreams should be installed on OpenShift:
+
+  ```
+  oc login -u system:admin
+  oc create -n openshift -f https://raw.githubusercontent.com/jboss-fuse/application-templates/master/fis-image-streams.json
+  oc create -n openshift -f https://raw.githubusercontent.com/jboss-openshift/application-templates/ose-v1.4.14/eap/eap64-image-stream.json
+  oc create -n openshift -f https://raw.githubusercontent.com/jboss-openshift/application-templates/ose-v1.4.14/openjdk/openjdk18-image-stream.json
+  oc create -n openshift -f https://raw.githubusercontent.com/jboss-openshift/application-templates/ose-v1.4.14/processserver/processserver64-image-stream.json
+  oc create -n openshift -f https://raw.githubusercontent.com/jboss-openshift/application-templates/ose-v1.4.14/webserver/jws31-tomcat8-image-stream.json
+  oc create -n openshift -f https://raw.githubusercontent.com/jboss-openshift/application-templates/ose-v1.4.14/eap/eap70-image-stream.json
+  oc create -n openshift -f https://raw.githubusercontent.com/jboss-openshift/application-templates/ose-v1.4.14/decisionserver/decisionserver64-image-stream.json
+  oc create -n openshift -f https://raw.githubusercontent.com/jboss-openshift/application-templates/ose-v1.4.14/datagrid/datagrid65-image-stream.json
+  ```
 
 ### Run Playbooks Locally (Ansible installed)
 
@@ -17,10 +30,10 @@ on any OpenShift environment:
 ```
 $ git clone https://github.com/siamaksade/openshift-demos-ansible.git
 $ cd openshift-demos-ansible
-$ git checkout ocp-3.9
+$ git checkout ocp-3.10
 $ oc login http://openshiftmaster
 $ ansible-galaxy install -r playbooks/coolstore/requirements.yml
-$ ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml -e "github_ref=stable-ocp-3.9"
+$ ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml
 ```
 
 ### Run Playbooks Locally (Docker installed)
@@ -30,10 +43,9 @@ $ ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml -e "github_ref=stabl
 
 ```
 $ oc login http://openshiftmaster
-$ docker run --rm -it siamaksade/openshift-demos-ansible:ocp-3.9 playbooks/coolstore/msa-cicd-eap-min.yml \
+$ docker run --rm -it siamaksade/openshift-demos-ansible:ocp-3.10 playbooks/coolstore/msa-cicd-eap-min.yml \
       -e "openshift_master=$(oc whoami --show-server)" \
-      -e "oc_token=$(oc whoami -t)" \
-      -e "github_ref=stable-ocp-3.9"
+      -e "oc_token=$(oc whoami -t)"
 ```
 
 ### Run Playbooks on OpenShift (with cluster admin)
@@ -49,8 +61,8 @@ the Ansible playbooks. Check out the template for the complete list of parameter
   $ oc new-app -f http://bit.ly/coolstore-ansible-template \
       --param=DEMO_NAME=msa-full \
       --param=PROJECT_ADMIN=developer \
-      --param=COOLSTORE_GITHUB_REF=stable-ocp-3.9
-      --param=ANSIBLE_PLAYBOOKS_VERSION=ocp-3.9
+      --param=COOLSTORE_GITHUB_REF=stable-ocp-3.10
+      --param=ANSIBLE_PLAYBOOKS_VERSION=ocp-3.10
 
   $ oc logs -f jobs/coolstore-ansible-installer
   ```
@@ -85,7 +97,7 @@ Demo repisotory: https://github.com/OpenShiftDemos/openshift-cd-demo
 You can modify the playbooks behavior by specifying extra variables
 
 ```
-$ ansible-playbook demos/coolstore/msa-min.yml -e "github_ref=stable-ocp-3.9 ephemeral=true project_suffix=demo1"
+$ ansible-playbook demos/coolstore/msa-min.yml -e "github_ref=stable-ocp-3.10 ephemeral=true project_suffix=demo1"
 ```
 
 | Variable             | Default   | Description                                                                                                            |

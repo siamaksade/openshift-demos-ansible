@@ -32,7 +32,7 @@ project_default_desc: "CoolStore MSA"
 
 
 github_account: jbossdemocentral
-github_ref: master
+github_ref: ocp-3.10
 
 ephemeral: false
 
@@ -58,4 +58,4 @@ nexus_image_version: 3.6.1
 
 projects_join_with: "{{ project_cicd }}"
 
-workshopper_content_url_prefix: https://raw.githubusercontent.com/siamaksade/coolstore-demo-guides/openshift-3.9
+workshopper_content_url_prefix: https://raw.githubusercontent.com/siamaksade/coolstore-demo-guides/openshift-3.10

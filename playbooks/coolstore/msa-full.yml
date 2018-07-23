@@ -16,6 +16,8 @@
         project_annotations: "demo=demo-msa-{{ project_suffix }}"
         hostname_suffix: "{{ apps_hostname_suffix }}"
         enable_cicd: false
+        src_github_account: "{{ github_account }}"
+        src_github_ref: stable-{{ github_ref }}
 
     # verify deployed successfully
     - include_tasks: verify_all.yml

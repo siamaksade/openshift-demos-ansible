@@ -1,27 +1,27 @@
 - src: siamaksade.openshift_common_facts
-  version: ocp-3.9
+  version: ocp-3.10
   name: openshift_common_facts
 
 - src: siamaksade.openshift_sonatype_nexus
-  version: ocp-3.9
+  version: ocp-3.10
   name: openshift_sonatype_nexus
 
 - src: siamaksade.openshift_gogs
-  version: ocp-3.9
+  version: ocp-3.10
   name: openshift_gogs
 
 - src: siamaksade.openshift_jenkins
-  version: ocp-3.9
+  version: ocp-3.10
   name: openshift_jenkins
 
 - src: siamaksade.openshift_workshopper
-  version: ocp-3.9
+  version: ocp-3.10
   name: openshift_workshopper
 
 - src: siamaksade.openshift_coolstore
-  version: ocp-3.9
+  version: ocp-3.10
   name: openshift_coolstore
 
 - src: siamaksade.openshift_eclipse_che
-  version: ocp-3.9
+  version: ocp-3.10
   name: openshift_eclipse_che
