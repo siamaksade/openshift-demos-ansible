@@ -58,10 +58,10 @@ the Ansible playbooks. Check out the template for the complete list of parameter
   $ oc new-project demo-installer
   $ oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:demo-installer:default
   
-  $ oc new-app -f http://bit.ly/coolstore-ansible-template \
+  $ oc new-app -f helpers/coolstore-ansible-installer.yaml \
       --param=DEMO_NAME=msa-full \
       --param=PROJECT_ADMIN=developer \
-      --param=COOLSTORE_GITHUB_REF=stable-ocp-3.10
+      --param=COOLSTORE_GITHUB_REF=ocp-3.10
       --param=ANSIBLE_PLAYBOOKS_VERSION=ocp-3.10
 
   $ oc logs -f jobs/coolstore-ansible-installer
