@@ -97,7 +97,7 @@ Demo repisotory: https://github.com/OpenShiftDemos/openshift-cd-demo
 You can modify the playbooks behavior by specifying extra variables
 
 ```
-$ ansible-playbook demos/coolstore/msa-min.yml -e "github_ref=stable-ocp-3.11 ephemeral=true project_suffix=demo1"
+$ ansible-playbook playbooks/coolstore/msa-min.yml -e "github_ref=ocp-3.11 ephemeral=true project_suffix=demo1"
 ```
 
 | Variable             | Default   | Description                                                                                                            |
