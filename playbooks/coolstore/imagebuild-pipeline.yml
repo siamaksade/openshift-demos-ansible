@@ -11,7 +11,7 @@
   vars:
     project_name: coolstore-image-builds
     github_account: jbossdemocentral
-    github_ref: ocp-3.10
+    github_ref: ocp-3.11
     maven_mirror_url: https://mirror.openshift.com/nexus/content/groups/public/
     pipeline_template: https://raw.githubusercontent.com/{{ github_account }}/coolstore-microservice/{{ github_ref }}/openshift/templates/imagebuild-pipeline-template.yaml
   tasks:

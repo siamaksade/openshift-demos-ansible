@@ -30,7 +30,7 @@ The following imagestreams should be installed on OpenShift:
 ```
 $ git clone https://github.com/siamaksade/openshift-demos-ansible.git
 $ cd openshift-demos-ansible
-$ git checkout ocp-3.10
+$ git checkout ocp-3.11
 $ oc login http://openshiftmaster
 $ ansible-galaxy install -r playbooks/coolstore/requirements.yml
 $ ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml
@@ -43,7 +43,7 @@ $ ansible-playbook playbooks/coolstore/msa-cicd-eap-min.yml
 
 ```
 $ oc login http://openshiftmaster
-$ docker run --rm -it siamaksade/openshift-demos-ansible:ocp-3.10 playbooks/coolstore/msa-cicd-eap-min.yml \
+$ docker run --rm -it siamaksade/openshift-demos-ansible:ocp-3.11 playbooks/coolstore/msa-cicd-eap-min.yml \
       -e "openshift_master=$(oc whoami --show-server)" \
       -e "oc_token=$(oc whoami -t)"
 ```
@@ -61,8 +61,8 @@ the Ansible playbooks. Check out the template for the complete list of parameter
   $ oc new-app -f helpers/coolstore-ansible-installer.yaml \
       --param=DEMO_NAME=msa-full \
       --param=PROJECT_ADMIN=developer \
-      --param=COOLSTORE_GITHUB_REF=ocp-3.10
-      --param=ANSIBLE_PLAYBOOKS_VERSION=ocp-3.10
+      --param=COOLSTORE_GITHUB_REF=ocp-3.11
+      --param=ANSIBLE_PLAYBOOKS_VERSION=ocp-3.11
 
   $ oc logs -f jobs/coolstore-ansible-installer
   ```
@@ -97,7 +97,7 @@ Demo repisotory: https://github.com/OpenShiftDemos/openshift-cd-demo
 You can modify the playbooks behavior by specifying extra variables
 
 ```
-$ ansible-playbook demos/coolstore/msa-min.yml -e "github_ref=stable-ocp-3.10 ephemeral=true project_suffix=demo1"
+$ ansible-playbook demos/coolstore/msa-min.yml -e "github_ref=stable-ocp-3.11 ephemeral=true project_suffix=demo1"
 ```
 
 | Variable             | Default   | Description                                                                                                            |

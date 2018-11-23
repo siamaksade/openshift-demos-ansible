@@ -21,7 +21,7 @@ parameters:
   name: COOLSTORE_GITHUB_ACCOUNT
   required: true
 - displayName: CoolStore GitHub Ref
-  value: stable-ocp-3.10
+  value: stable-ocp-3.11
   name: COOLSTORE_GITHUB_REF
   required: true
 - displayName: Maven Mirror URL
