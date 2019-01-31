@@ -46,7 +46,7 @@
         name: openshift_workshopper
       vars:
         project_name: "{{ project_cicd }}"
-        workshopper_workshop_urls: "{{ workshopper_content_url_prefix }}/demo-cicd-eap-full.yml"
+        workshopper_workshop_urls: "{{ workshopper_content_url_prefix }}/demo-cicd-eap.yml"
         workshopper_env_vars:
           PROJECT_SUFFIX: "{{ project_suffix }}"
           GOGS_URL: http://gogs-{{ project_cicd }}.{{ apps_hostname_suffix }}
